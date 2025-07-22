@@ -6,10 +6,9 @@ export ZSH="$HOME/.oh-my-zsh"
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git zsh-syntax-highlighting zsh-autosuggestions)
+plugins=(zsh-syntax-highlighting zsh-autosuggestions)
 
 # See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
-ZSH_THEME="robbyrussell"
 zstyle ':omz:update' mode reminder  # just remind me to update when it's time
 source $ZSH/oh-my-zsh.sh
 
@@ -33,3 +32,5 @@ source $HOME/.local.zshrc
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 export LOCAL_HOME="$HOME/.local/bin"
 export PATH="$LOCAL_HOME:$PATH"
+
+eval "$(starship init zsh)"
