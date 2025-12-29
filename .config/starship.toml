@@ -12,7 +12,6 @@ disabled = true
 
 # custom module for jj status
 [custom.jj]
-ignore_timeout = true
 description = "The current jj status"
 when = "jj root"
 symbol = "🥋 "

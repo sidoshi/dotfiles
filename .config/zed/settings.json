@@ -4,76 +4,106 @@
 // documentation: https://zed.dev/docs/configuring-zed
 //
 // To see all of Zed's default settings without changing your
-// custom settings, run the `open default settings` command
-// from the command palette or from `Zed` application menu.
+// custom settings, run `zed: open default settings` from the
+// command palette (cmd-shift-p / ctrl-shift-p)
 {
-  "base_keymap": "VSCode",
-  "features": {
-    "edit_prediction_provider": "zed"
+  "collaboration_panel": {
+    "button": false
   },
-  "file_finder": {
-    "modal_width": "medium"
+  "notification_panel": {
+    "button": false
   },
-
-  "ui_font_size": 16,
-  "buffer_font_size": 16,
-  "buffer_font_family": "FiraCode Nerd Font Mono",
-
-  "theme": "Github Dark",
-  "icon_theme": "Catppuccin Latte",
-
-  "vim_mode": true,
-  "vim": {
-    "enable_vim_sneak": true
+  "outline_panel": {
+    "button": true
   },
-
-  "relative_line_numbers": true,
+  "tabs": {
+    "show_close_button": "hover",
+    "show_diagnostics": "errors",
+    "file_icons": true
+  },
   "tab_bar": {
     "show": true
   },
-  "tabs": {
-    "show_diagnostics": "errors"
+  "title_bar": {
+    "show_onboarding_banner": true,
+    "show_project_items": true,
+    "show_branch_icon": false
   },
-
-  "indent_guides": {
-    "enabled": true,
-    "coloring": "indent_aware"
+  "debugger": {
+    "button": true
   },
-  "centered_layout": {
-    "left_padding": 0.15,
-    "right_padding": 0.15
+  "search": {
+    "button": true
   },
-
-  "assistant": {
-    "default_model": {
-      "provider": "zed.dev",
-      "model": "claude-3-7-sonnet-latest"
-    },
-    "version": "2"
+  "diagnostics": {
+    "button": true
   },
-
+  "status_bar": {
+    "cursor_position_button": false,
+    "active_language_button": true
+  },
+  "project_panel": {
+    "indent_size": 14.0,
+    "entry_spacing": "standard",
+    "default_width": 240.0,
+    "button": false
+  },
+  "colorize_brackets": false,
   "inlay_hints": {
+    "show_background": false,
     "enabled": true
   },
-
-  "project_panel": {
+  "minimap": {
+    "max_width_columns": 60,
+    "current_line_highlight": "all",
+    "thumb": "always",
+    "display_in": "all_editors",
+    "show": "auto"
+  },
+  "scrollbar": {
+    "axes": {
+      "vertical": true,
+      "horizontal": true
+    }
+  },
+  "gutter": {
+    "min_line_number_digits": 5
+  },
+  "sticky_scroll": {
+    "enabled": true
+  },
+  "cursor_shape": "underline",
+  "agent_ui_font_size": 15.0,
+  "buffer_font_weight": 450.0,
+  "telemetry": {
+    "diagnostics": false,
+    "metrics": false
+  },
+  "ui_font_family": "Symbols Nerd Font Mono",
+  "buffer_font_family": "FiraCode Nerd Font Mono",
+  "edit_predictions": {
+    "mode": "subtle",
+  },
+  "relative_line_numbers": "wrapped",
+  "terminal": {
+    "button": false,
+    "option_as_meta": true,
+  },
+  "agent": {
     "button": true,
-    "git_status": true,
-    "dock": "left"
+    "default_model": {
+      "provider": "copilot_chat",
+      "model": "claude-sonnet-4",
+    },
+    "default_profile": "ask",
   },
+  "window_decorations": "client",
+  "ui_font_size": 15.0,
 
-  "outline_panel": {
-    "dock": "left"
-  },
+  "buffer_font_size": 14.0,
+  "icon_theme": "Material Icon Theme",
+  "theme": "Carbonfox - opaque",
+  "wrap_guides": [120, 80],
 
-  "collaboration_panel": {
-    "dock": "right"
-  },
-  // Move some unnecessary panels to the left
-  "notification_panel": {
-    "dock": "right"
-  },
-  "chat_panel": {
-    "dock": "right"
-  }
+  "helix_mode": true,
 }

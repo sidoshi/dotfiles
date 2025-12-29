@@ -1,0 +1,12 @@
+theme = "carbonfox"
+
+
+[editor.lsp]
+display-inlay-hints = true
+
+[editor.file-picker]
+hidden = true
+
+[editor.soft-wrap]
+enable = true
+

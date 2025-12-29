@@ -34,3 +34,9 @@ export LOCAL_HOME="$HOME/.local/bin"
 export PATH="$LOCAL_HOME:$PATH"
 
 eval "$(starship init zsh)"
+
+. "$HOME/.atuin/bin/env"
+
+eval "$(atuin init zsh --disable-up-arrow)"
+eval "$(zoxide init zsh)"
+bindkey -v
