@@ -1,5 +1,13 @@
 theme = "carbonfox"
 
+[editor]
+line-number = "relative"
+mouse = false
+
+[editor.cursor-shape]
+insert = "bar"
+normal = "block"
+select = "underline"
 
 [editor.lsp]
 display-inlay-hints = true
@@ -10,3 +18,25 @@ hidden = true
 [editor.soft-wrap]
 enable = true
 
+[keys.normal]
+x = "select_line_below"
+X = "select_line_above"
+
+[keys.normal.space.space]
+# Open the file(s) in the current window
+f = ":sh zellij run -n yazi -c -f -x 10%% -y 10%% --width 80%% --height 80%% -- bash ~/.config/helix/yazi-picker.sh open %{buffer_name}"
+# Open the file(s) in a vertical split
+v = ":sh zellij run -n yazi -c -f -x 10%% -y 10%% --width 80%% --height 80%% -- bash ~/.config/helix/yazi-picker.sh vsplit %{buffer_name}"
+# Open the file(s) in a horizontal split
+h = ":sh zellij run -n yazi -c -f -x 10%% -y 10%% --width 80%% --height 80%% -- bash ~/.config/helix/yazi-picker.sh hsplit %{buffer_name}"
+# open lazygit
+g = [
+    ":write-all",
+    ":new",
+    ":insert-output lazygit",
+    ":buffer-close!",
+    ":redraw",
+    ":reload-all"
+]
+# save file
+s = ":write"

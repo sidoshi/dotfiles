@@ -1,0 +1,10 @@
+"$schema" = "https://jj-vcs.github.io/jj/latest/config-schema.json"
+
+[user]
+name = "Siddharth Doshi"
+email = "sidoshi510@gmail.com"
+
+[ui]
+diff-editor = ":builtin"
+default-command = "log"
+editor = "vim"

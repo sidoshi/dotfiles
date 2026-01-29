@@ -8,76 +8,76 @@
 // command palette (cmd-shift-p / ctrl-shift-p)
 {
   "collaboration_panel": {
-    "button": false
+    "button": false,
   },
   "notification_panel": {
-    "button": false
+    "button": false,
   },
   "outline_panel": {
-    "button": true
+    "button": true,
   },
   "tabs": {
     "show_close_button": "hover",
     "show_diagnostics": "errors",
-    "file_icons": true
+    "file_icons": true,
   },
   "tab_bar": {
-    "show": true
+    "show": true,
   },
   "title_bar": {
     "show_onboarding_banner": true,
     "show_project_items": true,
-    "show_branch_icon": false
+    "show_branch_icon": false,
   },
   "debugger": {
-    "button": true
+    "button": true,
   },
   "search": {
-    "button": true
+    "button": true,
   },
   "diagnostics": {
-    "button": true
+    "button": true,
   },
   "status_bar": {
     "cursor_position_button": false,
-    "active_language_button": true
+    "active_language_button": true,
   },
   "project_panel": {
     "indent_size": 14.0,
     "entry_spacing": "standard",
     "default_width": 240.0,
-    "button": false
+    "button": true,
   },
   "colorize_brackets": false,
   "inlay_hints": {
     "show_background": false,
-    "enabled": true
+    "enabled": true,
   },
   "minimap": {
     "max_width_columns": 60,
     "current_line_highlight": "all",
     "thumb": "always",
     "display_in": "all_editors",
-    "show": "auto"
+    "show": "auto",
   },
   "scrollbar": {
     "axes": {
       "vertical": true,
-      "horizontal": true
-    }
+      "horizontal": true,
+    },
   },
   "gutter": {
-    "min_line_number_digits": 5
+    "min_line_number_digits": 5,
   },
   "sticky_scroll": {
-    "enabled": true
+    "enabled": true,
   },
   "cursor_shape": "underline",
   "agent_ui_font_size": 15.0,
   "buffer_font_weight": 450.0,
   "telemetry": {
     "diagnostics": false,
-    "metrics": false
+    "metrics": false,
   },
   "ui_font_family": "Symbols Nerd Font Mono",
   "buffer_font_family": "FiraCode Nerd Font Mono",

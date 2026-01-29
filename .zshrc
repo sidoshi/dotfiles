@@ -33,6 +33,24 @@ source $HOME/.local.zshrc
 export LOCAL_HOME="$HOME/.local/bin"
 export PATH="$LOCAL_HOME:$PATH"
 
+clear-scrollback() {
+    # 1. Clear the screen and the scrollback buffer
+    printf '\033[H\033[2J\033[3J'
+    
+    # 2. Only try to reset the prompt if we are actually in the editor
+    if [[ -n "$WIDGET" ]]; then
+        zle .reset-prompt
+        zle redisplay
+    fi
+}
+
+# Define the widget and bind the key
+zle -N clear-scrollback
+alias c="clear-scrollback"
+
+export EDITOR="hx"
+alias zz="zellij"
+
 eval "$(starship init zsh)"
 
 . "$HOME/.atuin/bin/env"

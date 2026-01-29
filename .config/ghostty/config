@@ -1,0 +1,9 @@
+theme = Adventure
+unfocused-split-opacity = 0.4
+split-divider-color = #ccbbaa
+
+keybind = global:cmd+;=toggle_quick_terminal
+quick-terminal-position = center
+quick-terminal-size = 70%
+
+macos-option-as-alt = left
