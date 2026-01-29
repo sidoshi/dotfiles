@@ -7,3 +7,6 @@ quick-terminal-position = center
 quick-terminal-size = 70%
 
 macos-option-as-alt = left
+
+fullscreen = true
+window-decoration = client
