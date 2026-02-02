@@ -6,7 +6,8 @@ export ZSH="$HOME/.oh-my-zsh"
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(zsh-syntax-highlighting zsh-autosuggestions)
+plugins=(zsh-syntax-highlighting zsh-autosuggestions tmux)
+alias to='tmux new-session -A -s'
 
 # See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
 zstyle ':omz:update' mode reminder  # just remind me to update when it's time

@@ -12,3 +12,7 @@ macos-option-as-alt = left
 
 fullscreen = true
 window-decoration = client
+
+window-padding-y = 0
+window-padding-color = "extend"
+window-padding-balance = true

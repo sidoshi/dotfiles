@@ -2,17 +2,22 @@
 a,Append
 A,Append from end of line
 i,Insert
+I, Insert at beginning of line
 o,Next line
 O,Previous line
 cl,Delete char and insert
 cc,Delete line and insert
 c$,Delete until end of line and insert
+c^,Delete until beginning of line non-zero
+c0,Delete until beginning of line
+cs,Delete and insert until flash selection
 r,Replace one character
 R,Enter Replace mode
 u,Undo changes
 <C-R>,Redo changes
 x,Delete character
 dd,Delete line (Cut)
+<C-S>,save
 
 # Search and replace
 # TODO:
@@ -22,7 +27,8 @@ v,Enter visual mode
 V,Enter visual line mode
 <C-V>,Enter visual block mode
 d / x,Delete selection
-s,Replace selection
+s,Select until next flash selection
+# s,Replace selection
 y,Yank selection (Copy)
 
 # Navigating
