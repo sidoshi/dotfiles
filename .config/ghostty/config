@@ -1,3 +1,5 @@
+font-size = 16
+
 theme = Vague 
 unfocused-split-opacity = 0.4
 split-divider-color = #ccbbaa
