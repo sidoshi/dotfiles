@@ -1,0 +1,36 @@
+# Editing
+a,Append
+A,Append from end of line
+i,Insert
+o,Next line
+O,Previous line
+cl,Delete char and insert
+cc,Delete line and insert
+c$,Delete until end of line and insert
+r,Replace one character
+R,Enter Replace mode
+u,Undo changes
+<C-R>,Redo changes
+x,Delete character
+dd,Delete line (Cut)
+
+# Search and replace
+# TODO:
+
+# Visual Mode
+v,Enter visual mode
+V,Enter visual line mode
+<C-V>,Enter visual block mode
+d / x,Delete selection
+s,Replace selection
+y,Yank selection (Copy)
+
+# Navigating
+fc,Go forward to character c
+Fc,Go backward to character c
+zz,Center this line
+zt,Top this line
+zb,Bottom this line
+H,Move to the left tab
+M,Move to middle of screen
+L,Move to the right tab
