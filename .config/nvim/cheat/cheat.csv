@@ -18,6 +18,8 @@ u|Undo changes
 x|Delete character
 dd|Delete line (Cut)
 <C-S>|save
+[Space|Add empty line before
+]Space|Add empty line after
 
 # Search and replace
 n|Next matching search pattern
