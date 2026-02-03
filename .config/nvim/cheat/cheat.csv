@@ -1,0 +1,129 @@
+# Editing
+a|Append
+A|Append from end of line
+i|Insert
+I|Insert at beginning of line
+o|Next line
+O|Previous line
+cl|Delete char and insert
+cc|Delete line and insert
+c$|Delete until end of line and insert
+c^|Delete until beginning of line non-zero
+c0|Delete until beginning of line
+cs|Delete and insert until flash selection
+r|Replace one character
+R|Enter Replace mode
+u|Undo changes
+<C-R>|Redo changes
+x|Delete character
+dd|Delete line (Cut)
+<C-S>|save
+
+# Search and replace
+n|Next matching search pattern
+N|Previous match
+*|Next whole word under cursor
+/|Search down
+#|Previous whole word under cursor
+?|Search up
+
+# Visual Mode
+v|Enter visual mode
+V|Enter visual line mode
+<C-V>|Enter visual block mode
+d / x|Delete selection
+s|Select until next flash selection
+y|Yank selection to vim keyboard
+yy|Yank line to vim keyboard
+<leader> y|Yank to system clipboard
+<leader> yy|Yank line to system clipboard
+<leader> p|Paste from system clipboard
+<leader> fP|Paste from yank history
+<C-`>|Select block using flash
+
+# Navigating
+fc|Go forward to character c
+Fc|Go backward to character c
+;|Repeat last FfTt
+","|Repeat previous FfTt
+zz|Center this line
+zt|Top this line
+zb|Bottom this line
+H|Move to the left tab
+M|Move to middle of screen
+L|Move to the right tab
+{|Previous paragraph
+}|Next Paragraph
+<C-D>|Half page down
+<C-U>|Half page up
+10gg|Move to line 10
+gg|Move to the beginning of file
+G|Move to the end of file
+0|Start of line
+^|Start of line (after whitespace)
+$|End of line
+%|Nearest/matching {[()]}
+[( [{ [<|Previous ( or { or <
+])|Next )
+
+# Operators
+d|Delete
+y|Yank (copy)
+v|Select
+c|Change (delete then insert)
+>|Indent right
+<|Indent left
+=|Auto Indent
+g~|Swap case
+gU|Uppercase
+gu|Lowercase
+
+# Text objects
+p|Paragraph
+w|Word
+s|Sentence
+[({|A [] () or {} block
+'"`|A quoted string
+b|A block [(
+B|A block in [{
+t|A XML tag block
+
+# Folds
+zo|Open
+zc|Close
+za|Toggle
+zM|Close all
+zR|Open all
+
+# Marks
+`^|Last position of cursor in insert mode
+`.|Last change in current buffer
+`"|Last exited current buffer
+`0|In last file edited
+''|Back to line in current buffer where jumped from
+``|Back to position in current buffer where jumped from
+`[|To beginning of previously changed or yanked text
+`]|To end of previously changed or yanked text
+`<|To beginning of last visual selection
+`>|To end of last visual selection
+ma|Mark this cursor position as a
+`a|Jump to the cursor position a
+'a|Jump to the beginning of the line with position a
+d'a|Delete from current line to line of mark a
+d`a|Delete from current position to position of mark a
+c'a|Change text from current line to line of a
+y`a|Yank text from current position to position of a
+<leader>sm|List all current marks
+:delm a|Delete mark a
+:delm a-d|Delete marks abcd
+:delm abc|Delete marks abc
+
+# Jumping
+<C-O>|Go back to previous location
+<C-I>|Go forward
+gf|Go to file in cursor
+
+# Counters
+<C-A>|Increment
+<C-X>|Decrement
+

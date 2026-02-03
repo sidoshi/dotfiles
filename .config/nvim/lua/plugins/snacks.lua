@@ -49,6 +49,6 @@ return {
         },
       },
     },
+    explorer = { enabled = true },
   },
-  explorer = { enabled = true },
 }
