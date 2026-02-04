@@ -1,61 +1,49 @@
-# Path to your oh-my-zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
 
-# Which plugins would you like to load?
-# Standard plugins can be found in $ZSH/plugins/
-# Custom plugins may be added to $ZSH_CUSTOM/plugins/
-# Example format: plugins=(rails git textmate ruby lighthouse)
-# Add wisely, as too many plugins slow down shell startup.
-plugins=(zsh-syntax-highlighting zsh-autosuggestions tmux)
-alias to='tmux new-session -A -s'
+# 1. PRE-LOAD SETTINGS
+# Setting update mode to 'disabled' or 'reminder' helps, 
+# but 'disabled' is fastest.
+zstyle ':omz:update' mode reminder
 
-# See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
-zstyle ':omz:update' mode reminder  # just remind me to update when it's time
+# 2. PLUGINS
+# Moved syntax-highlighting to the END of the plugin list (required for correctness)
+plugins=(zsh-autosuggestions tmux zsh-syntax-highlighting)
+
+# 3. FAST COMPINIT (The Big Winner)
+# This replaces the internal OMZ compinit call with a cached version
+autoload -Uz compinit
+for dump in "${ZDOTDIR:-$HOME}/.zcompdump"(N.m1); do
+  compinit -C
+done
+if [[ ! -f "${ZDOTDIR:-$HOME}/.zcompdump" ]]; then
+  compinit
+fi
+
 source $ZSH/oh-my-zsh.sh
 
-ZSH_CUSTOM="$HOME/.oh-my-zsh/custom"
+. "$HOME/.atuin/bin/env"
+# 4. TOOL INITIALIZATION (Optimized)
+# Use --no-suggestions or similar flags if available to reduce compdef calls
+source ~/.starship_init.zsh
+source ~/.zoxide_init.zsh
+source ~/.atuin_init.zsh
 
+# Atuin setup - Ensure the path is set before eval
 
+# 5. USER CONFIG & ALIASES
+export PATH="$HOME/.local/bin:$PATH"
+export EDITOR="hx"
+alias to='tmux new-session -A -s'
+alias zz="zellij"
+bindkey -v
 
-# User configuration
-if [[ ! -f "$HOME/.local.zshrc" ]]; then
-    echo "# Private zsh config" > "$HOME/.local.zshrc"
-fi
-source $HOME/.local.zshrc
-
-# Set personal aliases, overriding those provided by oh-my-zsh libs,
-# plugins, and themes. Aliases can be placed here, though oh-my-zsh
-# users are encouraged to define aliases within the ZSH_CUSTOM folder.
-# For a full list of active aliases, run `alias`.
-#
-# Example aliases
-# alias zshconfig="mate ~/.zshrc"
-# alias ohmyzsh="mate ~/.oh-my-zsh"
-export LOCAL_HOME="$HOME/.local/bin"
-export PATH="$LOCAL_HOME:$PATH"
-
+# Your custom clear function
 clear-scrollback() {
-    # 1. Clear the screen and the scrollback buffer
     printf '\033[H\033[2J\033[3J'
-    
-    # 2. Only try to reset the prompt if we are actually in the editor
-    if [[ -n "$WIDGET" ]]; then
-        zle .reset-prompt
-        zle redisplay
-    fi
+    [[ -n "$WIDGET" ]] && zle .reset-prompt && zle redisplay
 }
-
-# Define the widget and bind the key
 zle -N clear-scrollback
 alias c="clear-scrollback"
 
-export EDITOR="hx"
-alias zz="zellij"
+source $HOME/.local.zshrc
 
-eval "$(starship init zsh)"
-
-. "$HOME/.atuin/bin/env"
-
-eval "$(atuin init zsh --disable-up-arrow)"
-eval "$(zoxide init zsh)"
-bindkey -v

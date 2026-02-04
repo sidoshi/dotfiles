@@ -1,4 +1,6 @@
 return {
+
+  { "EdenEast/nightfox.nvim" },
   {
     "vague-theme/vague.nvim",
     lazy = false, -- make sure we load this during startup if it is your main colorscheme
@@ -13,7 +15,7 @@ return {
   {
     "LazyVim/LazyVim",
     opts = {
-      colorscheme = "vague",
+      colorscheme = "carbonfox",
     },
   },
 }
