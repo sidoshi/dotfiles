@@ -91,7 +91,7 @@ async function addNoteToAnki(note: AnkiNote): Promise<boolean> {
     console.log(
       `⚠️  Skipped (duplicate): ${note.fields.Front.split("?")[0]}...`,
     );
-    return true; // Consider this a success since the note exists
+    return false; // Consider this a success since the note exists
   }
 
   const request: AnkiConnectRequest = {
@@ -201,11 +201,25 @@ export async function sync(csvPath?: string): Promise<void> {
       const escapedDescription = escapeForAnki(entry.description);
       const escapedSection = escapeForAnki(entry.section);
 
+      // Hash to help identify duplicates
+      // Hash will be embedded in the note field, so we must make it as short and simple as possible
+      const hash = await crypto.subtle
+        .digest(
+          "SHA-1",
+          new TextEncoder().encode(entry.command + entry.description),
+        )
+        .then((buf) => {
+          return Array.from(new Uint8Array(buf))
+            .map((b) => b.toString(16).padStart(2, "0"))
+            .join("")
+            .slice(0, 8); // Use first 8 chars of hash
+        });
+
       const note: AnkiNote = {
         deckName,
         modelName: "Basic (and reversed card)",
         fields: {
-          Front: `<code>${escapedCommand}</code> (${escapedSection}) #${i + 1}`,
+          Front: `<code>${escapedCommand}</code> (${escapedSection}) #${hash}`,
           Back: `${escapedDescription} (${escapedSection})`,
         },
         tags: ["vim", "cheatsheet"],

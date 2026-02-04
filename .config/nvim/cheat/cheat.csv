@@ -11,6 +11,9 @@ c$|Delete until end of line and insert
 c^|Delete until beginning of line non-zero
 c0|Delete until beginning of line
 cs|Delete and insert until flash selection
+ciw|Change inner word
+ci"|Change inside quotes
+ci[|Change inside brackets
 r|Replace one character
 R|Enter Replace mode
 u|Undo changes
@@ -20,6 +23,12 @@ dd|Delete line (Cut)
 <C-S>|save
 [Space|Add empty line before
 ]Space|Add empty line after
+J|Join line below to current line with space in between
+gJ|Join line below to current line without space in between
+xp|Swap character under cursor with next character
+.|Repeat last change command
+:g/{pattern}/d|delete all lines containing pattern
+:g!/{pattern}/d|delete all lines not containing pattern
 
 # Search and replace
 n|Next matching search pattern
@@ -28,6 +37,8 @@ N|Previous match
 /|Search down
 #|Previous whole word under cursor
 ?|Search up
+:%s/old/new/g|replace all old with new throughout file
+:%s/old/new/gc|replace all old with new throughout file with confirmations
 
 # Visual Mode
 v|Enter visual mode
@@ -42,12 +53,34 @@ yy|Yank line to vim keyboard
 <leader> p|Paste from system clipboard
 <leader> fP|Paste from yank history
 <C-`>|Select block using flash
+p|put (paste) the clipboard after cursor
+P|put (paste) before cursor
+gp|put (paste) the clipboard after cursor and leave cursor after the new text
+gP|put (paste) before cursor and leave cursor after the new text
+:3,5d|delete lines starting from 3 to 5
+o|Move cursor to other end of selection
+O|Move cursor to other corner of block selection
+
+# Insert Mode
+<C-W>|Delete word before cursor
+<C-U>|Delete all entered text in current line
+<C-O>|Execute one normal mode command then return to insert mode
+<C-G>u|Start new undo block
+<M-W>|Exit insert mode and go the the next word
 
 # Navigating
+w|jump forwards to the start of a word
+W|jump forwards to the start of a WORD
+e|jump forwards to the end of a word
+E|jump forwards to the end of a WORD
+b|jump backwards to the start of a word
+B|jump backwards to the start of a WORD
+ge|jump backwards to the end of a word
+gE|jump backwards to the end of a WORD
 fc|Go forward to character c
 Fc|Go backward to character c
 ;|Repeat last FfTt
-","|Repeat previous FfTt
+,|Repeat previous FfTt
 zz|Center this line
 zt|Top this line
 zb|Bottom this line
@@ -56,6 +89,8 @@ M|Move to middle of screen
 L|Move to the right tab
 {|Previous paragraph
 }|Next Paragraph
+<C-E>|Screen down one line without moving cursor
+<C-Y>|Screen up one line without moving cursor
 <C-D>|Half page down
 <C-U>|Half page up
 10gg|Move to line 10
@@ -64,9 +99,27 @@ G|Move to the end of file
 0|Start of line
 ^|Start of line (after whitespace)
 $|End of line
+g_|Last non-blank character of line
 %|Nearest/matching {[()]}
 [( [{ [<|Previous ( or { or <
 ])|Next )
+
+# Windows
+<C-W>s|split window
+<C-W>v|split window vertically
+<C-W>w|switch windows
+<C-W>q|quit a window
+<C-W>x|exchange current window with next one
+<C-W> =|make all windows equal height & width
+<C-H>|move cursor to the left window (vertical split)
+<C-L>|move cursor to the right window (vertical split)
+<C-J>|move cursor to the window below (horizontal split)
+<C-K>|move cursor to the window above (horizontal split)
+<C-W>H|move current window to far left (leftmost vertical window)
+<C-W>L|move current window to far right (rightmost vertical window)
+<C-W>J|move current window to very bottom (bottommost horizontal window)
+<C-W>K|move current window to very top (topmost horizontal window)
+
 
 # Operators
 d|Delete
