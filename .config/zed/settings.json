@@ -105,5 +105,5 @@
   "theme": "Carbonfox - opaque",
   "wrap_guides": [120, 80],
 
-  "helix_mode": true,
+  "vim_mode": true,
 }
