@@ -25,7 +25,7 @@ return {
       cond = function()
         return vim.fn.isdirectory(".jj") == 1
       end,
-      color = { fg = "#ff9e64", gui = "bold" },
+      color = { fg = "#ffffff", gui = "bold" },
     })
   end,
 }
