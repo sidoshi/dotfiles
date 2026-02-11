@@ -6,3 +6,5 @@ vim.opt.clipboard = ""
 -- Disable AI code completion suggestions
 -- so that they don't conflict with the ghost text suggestions from copilot
 vim.g.ai_cmp = false
+-- Force LazyVim to look for .git first, or just follow the terminal CWD
+vim.g.root_spec = { ".git", "cwd" }

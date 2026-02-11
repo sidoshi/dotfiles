@@ -43,6 +43,9 @@ return {
     },
     picker = {
       sources = {
+        files = {
+          hidden = true,
+        },
         explorer = {
           hidden = true,
           jump = { close = true },
