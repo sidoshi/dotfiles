@@ -27,5 +27,7 @@ return {
       end,
       color = { fg = "#ffffff", gui = "bold" },
     })
+
+    opts.sections.lualine_z = {}
   end,
 }
