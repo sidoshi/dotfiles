@@ -4,3 +4,8 @@
 --
 vim.keymap.del("n", "<leader>|")
 vim.keymap.del("n", "<leader>-")
+
+-- Add window maximize toggle using Ctrl+w z (similar to tmux prefix+z)
+vim.keymap.set("n", "<C-w>z", "<C-w>|<C-w>_", { desc = "Maximize current window" })
+-- Add a second mapping to restore windows to equal size
+vim.keymap.set("n", "<C-w>Z", "<C-w>=", { desc = "Restore windows to equal size" })
