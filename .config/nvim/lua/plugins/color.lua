@@ -1,6 +1,15 @@
 return {
 
-  { "EdenEast/nightfox.nvim" },
+  {
+    "EdenEast/nightfox.nvim",
+    opts = {
+      groups = {
+        all = {
+          Visual = { bg = "#3e4a5b" },
+        },
+      },
+    },
+  },
   {
     "vague-theme/vague.nvim",
     lazy = false, -- make sure we load this during startup if it is your main colorscheme
