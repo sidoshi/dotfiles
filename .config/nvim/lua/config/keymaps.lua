@@ -9,3 +9,10 @@ vim.keymap.del("n", "<leader>-")
 vim.keymap.set("n", "<C-w>z", "<C-w>|<C-w>_", { desc = "Maximize current window" })
 -- Add a second mapping to restore windows to equal size
 vim.keymap.set("n", "<C-w>Z", "<C-w>=", { desc = "Restore windows to equal size" })
+
+-- Add a keymap to delete a buffer
+vim.keymap.set("n", "Q", function()
+  Snacks.bufdelete()
+end, { desc = "Delete Buffer" })
+-- Add a keymap to reopen the last buffer
+vim.keymap.set("n", "T", "<cmd>e #<cr>", { desc = "Reopen last buffer" })

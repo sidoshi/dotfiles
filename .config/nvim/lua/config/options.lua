@@ -8,3 +8,8 @@ vim.opt.clipboard = ""
 vim.g.ai_cmp = false
 -- Force LazyVim to look for .git first, or just follow the terminal CWD
 vim.g.root_spec = { ".git", "cwd" }
+
+vim.filetype.add({
+  filename = { [".env"] = "dotenv" },
+  pattern = { ["%.env%..*"] = "dotenv" },
+})
