@@ -1,6 +1,5 @@
 {
   "extras": [
-    "lazyvim.plugins.extras.ai.supermaven",
     "lazyvim.plugins.extras.coding.mini-comment",
     "lazyvim.plugins.extras.coding.mini-surround",
     "lazyvim.plugins.extras.coding.yanky",
@@ -16,6 +15,7 @@
     "lazyvim.plugins.extras.linting.eslint",
     "lazyvim.plugins.extras.test.core",
     "lazyvim.plugins.extras.util.project",
+    "lazyvim.plugins.extras.ai.supermaven",
     "lazyvim.plugins.extras.util.startuptime"
   ],
   "install_version": 8,

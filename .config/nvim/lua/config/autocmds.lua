@@ -18,3 +18,12 @@ vim.api.nvim_create_autocmd("ColorScheme", {
     vim.api.nvim_set_hl(0, "LspReferenceWrite", { bg = "#3e4452", underline = true })
   end,
 })
+
+-- This forces spell off specifically for markdown files,
+-- overriding the lang.markdown default.
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = { "markdown", "gitcommit", "text" },
+  callback = function()
+    vim.opt_local.spell = false
+  end,
+})
