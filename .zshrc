@@ -32,7 +32,7 @@ source ~/.atuin_init.zsh
 
 # 5. USER CONFIG & ALIASES
 export PATH="$HOME/.local/bin:$PATH"
-export EDITOR="hx"
+export EDITOR="nvim"
 alias to='tmux new-session -A -s'
 alias zz="zellij"
 bindkey -v
