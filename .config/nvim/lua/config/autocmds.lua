@@ -7,6 +7,15 @@
 -- Or remove existing autocmds by their group name (which is prefixed with `lazyvim_` for the defaults)
 -- e.g. vim.api.nvim_del_augroup_by_name("lazyvim_wrap_spell")
 
+-- Re-sign .so files after :Lazy operations to prevent macOS code signature crashes
+vim.api.nvim_create_autocmd("User", {
+  pattern = "LazyInstall",
+  callback = function()
+    local data_dir = vim.fn.stdpath("data")
+    vim.fn.system({ "find", data_dir, "-name", "*.so", "-exec", "codesign", "--force", "--sign", "-", "{}", ";" })
+  end,
+})
+
 -- The Vague color scheme has a contrast issue with the LSP reference highlights
 -- This autocmd fixes that by setting custom highlights for LSP references
 vim.api.nvim_create_autocmd("ColorScheme", {

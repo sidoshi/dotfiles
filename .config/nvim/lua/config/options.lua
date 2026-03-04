@@ -3,6 +3,10 @@
 -- Add any additional options here
 vim.opt.clipboard = ""
 
+-- Pre-set background to prevent OSC 11 race condition on nvim 0.11 + Ghostty
+-- Without this, the terminal's OSC 11 response can leak as keyboard input and crash nvim
+vim.o.background = "dark"
+
 -- Disable AI code completion suggestions
 -- so that they don't conflict with the ghost text suggestions from copilot
 vim.g.ai_cmp = false
