@@ -28,6 +28,12 @@ return {
       color = { fg = "#ffffff", gui = "bold" },
     })
 
-    opts.sections.lualine_z = {}
+    opts.sections.lualine_z = {
+      {
+        function()
+          return "W" .. os.date("%V")
+        end,
+      },
+    }
   end,
 }
