@@ -28,6 +28,14 @@ return {
       color = { fg = "#ffffff", gui = "bold" },
     })
 
+    opts.sections.lualine_c = {
+      {
+        "filename",
+        path = 1, -- relative path
+        shorting_target = 0, -- don't shorten the path
+      },
+    }
+
     opts.sections.lualine_z = {
       {
         function()
