@@ -10,6 +10,12 @@ quick-terminal-position = bottom
 quick-terminal-autohide = true
 quick-terminal-size = 50%
 
+keybind = cmd+alt+enter=toggle_split_zoom
+keybind = cmd+alt+h=goto_split:left
+keybind = cmd+alt+j=goto_split:bottom
+keybind = cmd+alt+k=goto_split:top
+keybind = cmd+alt+l=goto_split:right
+
 macos-option-as-alt = left
 
 window-padding-y = 0
