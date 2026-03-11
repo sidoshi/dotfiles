@@ -5,8 +5,10 @@ unfocused-split-opacity = 0.4
 split-divider-color = #ccbbaa
 
 keybind = global:cmd+;=toggle_quick_terminal
-quick-terminal-position = center
-quick-terminal-size = 70%
+keybind = global:cmd+i=prompt_tab_title
+quick-terminal-position = bottom
+quick-terminal-autohide = true
+quick-terminal-size = 50%
 
 macos-option-as-alt = left
 
@@ -15,4 +17,4 @@ window-padding-color = "extend"
 window-padding-balance = true
 title = " "
 macos-titlebar-proxy-icon = hidden
-window-save-state = always
+window-save-state = never
