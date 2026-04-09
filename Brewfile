@@ -1,6 +1,3 @@
-tap "mongodb/brew"
-tap "freight-hub/internal"
-
 brew "atuin"
 brew "coreutils"
 brew "curl"
@@ -32,9 +29,6 @@ brew "podman-compose"
 
 brew "zsh-autosuggestions"
 brew "zsh-syntax-highlighting"
-
-brew "freight-hub/internal/forto-cli"
-brew "mongodb/brew/mongodb-database-tools"
 
 cask "podman-desktop"
 cask "alt-tab"
