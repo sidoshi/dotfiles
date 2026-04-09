@@ -1,0 +1,7 @@
+[tools]
+"cargo:jj-cli" = "latest"
+"cargo:lazyjj" = "latest"
+node = "22"
+python = "latest"
+rust = "latest"
+yarn = "latest"
