@@ -19,16 +19,19 @@ source $ZSH/oh-my-zsh.sh
 
 # USER CONFIG & ALIASES
 export PATH="$HOME/.local/bin:$PATH"
-export MISE_SHIMS_DIR="$HOME/.local/share/mise/shims"
-export PATH="$MISE_SHIMS_DIR:$PATH"
 export EDITOR="nvim"
 bindkey -v
+alias ls='lsd'
+alias la='ls -A1 --blocks permission,date,git,size,name'
+alias cat='bat'
+alias cd='z'
+alias top='btm'
 
 eval "$(atuin init zsh --disable-up-arrow)"
 eval "$(mise activate zsh)"
 
 # TOOL INITIALIZATION (Optimized)
-source ~/.starship_init.zsh
+source <(/opt/homebrew/bin/starship init zsh --print-full-init)
 source $(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh
 source $(brew --prefix)/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
@@ -46,4 +49,19 @@ if [[ -n "$GHOSTTY_LAUNCH_DIR" ]]; then
   fi
 fi
 
+# Define where your source-of-truth Brewfile lives
+export DOTFILES_BREWFILE="$HOME/dotfiles/Brewfile"
+# The "Auto-Sync" Wrapper
+brew() {
+  # Call the real homebrew binary 
+  command brew "$@"
+  # Check if the command was an installation or removal
+  case "$1" in install|uninstall|tap|untap|cask)
+    echo "--- 🔄 Auto-syncing Brewfile to dotfiles ---"
+    # Update the Brewfile automatically
+    command brew bundle dump --force --describe --file="$DOTFILES_BREWFILE" ;;
+  esac
+}
 
+
+source /Users/siddharth.doshi/.config/broot/launcher/bash/br

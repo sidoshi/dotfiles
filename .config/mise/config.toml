@@ -1,6 +1,10 @@
 [tools]
+bat = "latest"
+bottom = "latest"
 "cargo:jj-cli" = "latest"
 "cargo:lazyjj" = "latest"
+claude-code = "latest"
+lsd = "latest"
 node = "22"
 python = "latest"
 rust = "latest"

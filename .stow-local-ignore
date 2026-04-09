@@ -3,3 +3,5 @@
 .gitignore
 .gitmodules
 readme.md
+Brewfile
+.fdignore
