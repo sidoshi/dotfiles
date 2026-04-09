@@ -7,4 +7,4 @@ email = "sidoshi510@gmail.com"
 [ui]
 diff-editor = ":builtin"
 default-command = "log"
-editor = "vim"
+editor = "nvim"
