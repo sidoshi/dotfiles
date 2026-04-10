@@ -26,6 +26,7 @@ alias la='ls -A1 --blocks permission,date,git,size,name'
 alias cat='bat'
 alias cd='z'
 alias top='btm'
+alias du='dust'
 
 eval "$(atuin init zsh --disable-up-arrow)"
 eval "$(mise activate zsh)"
@@ -59,7 +60,7 @@ brew() {
   case "$1" in install|uninstall|tap|untap|cask)
     echo "--- 🔄 Auto-syncing Brewfile to dotfiles ---"
     # Update the Brewfile automatically
-    command brew bundle dump --force --describe --file="$DOTFILES_BREWFILE" ;;
+    command brew bundle dump --force --file="$DOTFILES_BREWFILE" ;;
   esac
 }
 
