@@ -2,6 +2,24 @@
 
 command_timeout = 1000
 
+# Two-line layout: path + vcs info on line 1, prompt character on line 2.
+# $fill pushes cmd_duration to the right side of the terminal.
+format = """
+$directory${custom.jj}${custom.git_branch}$fill$python$nodejs$rust$cmd_duration
+$character"""
+
+[character]
+success_symbol = "[❯](bold green)"
+error_symbol = "[❯](bold red)"
+
+[cmd_duration]
+min_time = 1000
+format = "[$duration](bold yellow) "
+
+[directory]
+truncation_length = 4
+truncate_to_repo = true
+
 [package]
 disabled = true
 
@@ -11,11 +29,10 @@ disabled = true
 [docker_context]
 disabled = true
 
-
 # custom module for jj status
 [custom.jj]
 description = "The current jj status"
-when = "jj root"
+when = "jj root --ignore-working-copy 2>/dev/null"
 symbol = "🥋 "
 command = '''
 jj log --revisions @ --no-graph --ignore-working-copy --color always --limit 1 --template '
@@ -29,16 +46,22 @@ jj log --revisions @ --no-graph --ignore-working-copy --color always --limit 1 -
       if(hidden, "👻"),
       if(immutable, "🔒"),
     ),
-    raw_escape_sequence("\x1b[1;32m") ++ if(empty, "(empty)"),
-    raw_escape_sequence("\x1b[1;32m") ++ coalesce(
-      truncate_end(29, description.first_line(), "…"),
-      "(no description set)",
-    ) ++ raw_escape_sequence("\x1b[0m"),
+    label("bold green", separate(" ",
+      if(empty, "(empty)"),
+      coalesce(
+        truncate_end(29, description.first_line(), "…"),
+        "(no description set)",
+      ),
+    )),
   )
 '
 '''
 
-# optionally disable git modules
+# disable all git modules (jj handles its own display; git_status shows wrong
+# info in jj repos since they have a .git dir)
+[git_status]
+disabled = true
+
 [git_state]
 disabled = true
 
@@ -51,8 +74,8 @@ disabled = true
 [git_branch]
 disabled = true
 
-# re-enable git_branch as long as we're not in a jj repo
+# show git_branch only in git repos that aren't also jj repos
 [custom.git_branch]
-when = true
-command = "jj root >/dev/null 2>&1 || starship module git_branch"
+when = "git rev-parse --git-dir 2>/dev/null && ! jj root --ignore-working-copy 2>/dev/null"
+command = "starship module git_branch"
 description = "Only show git_branch if we're not in a jj repo"

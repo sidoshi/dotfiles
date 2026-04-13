@@ -30,7 +30,7 @@ brew "yt-dlp"
 brew "zoxide"
 brew "zsh-autosuggestions"
 brew "zsh-syntax-highlighting"
-
+cask "1password-cli"
 cask "alt-tab"
 cask "font-symbols-only-nerd-font"
 cask "ghostty"
