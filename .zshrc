@@ -65,4 +65,3 @@ brew() {
 }
 
 
-source /Users/siddharth.doshi/.config/broot/launcher/bash/br

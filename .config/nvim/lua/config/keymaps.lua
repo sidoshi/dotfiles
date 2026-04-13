@@ -16,3 +16,7 @@ vim.keymap.set("n", "Q", function()
 end, { desc = "Delete Buffer" })
 -- Add a keymap to reopen the last buffer
 vim.keymap.set("n", "T", "<cmd>e #<cr>", { desc = "Reopen last buffer" })
+
+-- LSP call hierarchy
+vim.keymap.set("n", "<leader>cci", vim.lsp.buf.incoming_calls, { desc = "Incoming Calls" })
+vim.keymap.set("n", "<leader>cco", vim.lsp.buf.outgoing_calls, { desc = "Outgoing Calls" })

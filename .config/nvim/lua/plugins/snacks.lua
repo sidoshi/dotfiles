@@ -1,5 +1,21 @@
 return {
   "folke/snacks.nvim",
+  keys = {
+    {
+      "<leader>e",
+      function()
+        local explorer = Snacks.picker.get({ source = "explorer" })[1]
+        if not explorer then
+          Snacks.explorer()
+        elseif explorer:is_focused() then
+          explorer:close()
+        else
+          explorer:focus()
+        end
+      end,
+      desc = "Explorer",
+    },
+  },
   opts = {
     -- Minimalist dashboard configuration
     dashboard = {
@@ -48,7 +64,6 @@ return {
         },
         explorer = {
           hidden = true,
-          jump = { close = true },
         },
       },
     },
