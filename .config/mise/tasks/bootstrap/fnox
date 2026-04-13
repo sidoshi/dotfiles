@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+#MISE description="Prompt for age private key and store it for fnox"
+set -euo pipefail
+
+KEY_PATH="$HOME/.config/fnox/age.txt"
+
+if [[ -f "$KEY_PATH" ]]; then
+  echo "Age key already exists at $KEY_PATH"
+  read -r -p "Overwrite? [y/N] " confirm
+  [[ "$confirm" =~ ^[Yy]$ ]] || exit 0
+fi
+
+read -rsp "Paste your age private key (starts with AGE-SECRET-KEY-), then press Enter: " key
+echo
+
+if [[ -z "$key" ]]; then
+  echo "No key provided, aborting." >&2
+  exit 1
+fi
+
+if [[ "$key" != AGE-SECRET-KEY-* ]]; then
+  echo "Input doesn't look like an age private key (expected AGE-SECRET-KEY-...)" >&2
+  exit 1
+fi
+
+mkdir -p "$(dirname "$KEY_PATH")"
+printf '%s\n' "$key" >"$KEY_PATH"
+chmod 600 "$KEY_PATH"
+echo "Age key stored at $KEY_PATH"

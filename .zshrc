@@ -30,6 +30,8 @@ alias du='dust'
 
 eval "$(atuin init zsh --disable-up-arrow)"
 eval "$(mise activate zsh)"
+eval "$(mise completion zsh)"
+eval "$(fnox activate zsh)"
 
 # TOOL INITIALIZATION (Optimized)
 source <(/opt/homebrew/bin/starship init zsh --print-full-init)
