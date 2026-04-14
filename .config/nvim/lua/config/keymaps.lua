@@ -17,6 +17,14 @@ end, { desc = "Delete Buffer" })
 -- Add a keymap to reopen the last buffer
 vim.keymap.set("n", "T", "<cmd>e #<cr>", { desc = "Reopen last buffer" })
 
+-- CodeDiff
+vim.keymap.set("n", "<leader>gd", "<cmd>CodeDiff<cr>",                   { desc = "Diff working tree" })
+vim.keymap.set("n", "<leader>gL", "<cmd>CodeDiff history<cr>",           { desc = "Commit history" })
+vim.keymap.set("n", "<leader>gH", "<cmd>CodeDiff history HEAD~20 %<cr>", { desc = "File history" })
+vim.keymap.set("n", "<leader>gm", "<cmd>CodeDiff main...<cr>",           { desc = "Diff vs main (PR)" })
+vim.keymap.set("n", "<leader>g1", "<cmd>CodeDiff HEAD~1<cr>",            { desc = "Diff HEAD~1" })
+vim.keymap.set("n", "<leader>g2", "<cmd>CodeDiff HEAD~2<cr>",            { desc = "Diff HEAD~2" })
+
 -- LSP call hierarchy
 vim.keymap.set("n", "<leader>cci", vim.lsp.buf.incoming_calls, { desc = "Incoming Calls" })
 vim.keymap.set("n", "<leader>cco", vim.lsp.buf.outgoing_calls, { desc = "Outgoing Calls" })
