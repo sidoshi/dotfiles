@@ -21,13 +21,6 @@ source $ZSH/oh-my-zsh.sh
 export PATH="$HOME/.local/bin:$PATH"
 export EDITOR="nvim"
 bindkey -v
-alias ls='lsd'
-alias la='ls -A1 --blocks permission,date,git,size,name'
-alias cat='bat'
-alias cd='z'
-alias top='btm'
-alias du='dust'
-
 eval "$(atuin init zsh --disable-up-arrow)"
 eval "$(mise activate zsh)"
 eval "$(mise completion zsh)"

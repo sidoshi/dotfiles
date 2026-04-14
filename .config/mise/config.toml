@@ -1,3 +1,11 @@
+[shell_alias]
+ls = "lsd"
+la = "lsd -A1 --blocks permission,date,git,size,name"
+cat = "bat"
+cd = "z"
+top = "btm"
+du = "dust"
+
 [tools]
 "aqua:jj" = "latest"
 bat = "latest"
