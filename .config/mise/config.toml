@@ -7,6 +7,7 @@ top = "btm"
 du = "dust"
 
 [tools]
+"aqua:YS-L/csvlens" = "latest"
 "aqua:jj" = "latest"
 bat = "latest"
 bottom = "latest"
@@ -20,3 +21,4 @@ node = "22"
 python = "latest"
 rust = "latest"
 yarn = "latest"
+yazi = "latest"
