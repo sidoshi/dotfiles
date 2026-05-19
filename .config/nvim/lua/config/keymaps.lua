@@ -28,3 +28,11 @@ vim.keymap.set("n", "<leader>g2", "<cmd>CodeDiff HEAD~2<cr>",            { desc 
 -- LSP call hierarchy
 vim.keymap.set("n", "<leader>cci", vim.lsp.buf.incoming_calls, { desc = "Incoming Calls" })
 vim.keymap.set("n", "<leader>cco", vim.lsp.buf.outgoing_calls, { desc = "Outgoing Calls" })
+
+-- ctrl+hjkl moves between nvim windows; ghostty's `performable:` bindings take
+-- over once we hit the edge of nvim and a ghostty split exists in that direction.
+-- ctrl+shift+hjkl is an nvim-only escape hatch — never intercepted by ghostty.
+for _, key in ipairs({ "h", "j", "k", "l" }) do
+  vim.keymap.set("n", "<C-" .. key .. ">", "<cmd>wincmd " .. key .. "<cr>", { desc = "Window " .. key })
+  vim.keymap.set("n", "<C-S-" .. key .. ">", "<cmd>wincmd " .. key .. "<cr>", { desc = "Window " .. key .. " (nvim-only)" })
+end
