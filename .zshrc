@@ -5,6 +5,21 @@ export PATH="$HOME/.local/bin:$PATH"
 export EDITOR="nvim"
 bindkey -v
 
+# Cached compinit: full audit/rebuild once a day, fast `-C` otherwise.
+autoload -Uz compinit
+local zd="${ZDOTDIR:-$HOME}/.zcompdump"
+if [[ -n $zd(#qN.m-1) ]]; then
+  compinit -C -d "$zd"
+else
+  compinit -d "$zd"
+  touch "$zd"
+fi
+
+# Always-on essentials: prompt + directory jumping
+eval "$(zoxide init zsh)"
+source <(/opt/homebrew/bin/starship init zsh --print-full-init)
+eval "$(atuin init zsh --disable-up-arrow)"
+
 # `up` — promote bare-bones shell into a smarter shell.
 # `up <cmd> [args...]` — ensure smart-mode is loaded, then run the command.
 up() {
@@ -22,6 +37,9 @@ up() {
 
   (( $# > 0 )) && "$@"
 }
+up
+
+[[ -f ~/.local.zshrc ]] && source ~/.local.zshrc
 
 # Ghostty launched from GJump raycast extension (https://github.com/sidoshi/GJump)
 if [[ -n "$GHOSTTY_LAUNCH_DIR" ]]; then
@@ -44,20 +62,3 @@ brew() {
   esac
 }
 
-# Always-on essentials: prompt + directory jumping
-eval "$(zoxide init zsh)"
-source <(/opt/homebrew/bin/starship init zsh --print-full-init)
-eval "$(atuin init zsh --disable-up-arrow)"
-
-# Cached compinit: full audit/rebuild once a day, fast `-C` otherwise.
-autoload -Uz compinit
-local zd="${ZDOTDIR:-$HOME}/.zcompdump"
-if [[ -n $zd(#qN.m-1) ]]; then
-  compinit -C -d "$zd"
-else
-  compinit -d "$zd"
-  touch "$zd"
-fi
-
-
-[[ -f ~/.local.zshrc ]] && source ~/.local.zshrc
