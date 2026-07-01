@@ -1,3 +1,9 @@
 [user]
 	email = sidoshi510@gmail.com
 	name = Siddharth Doshi
+[credential "https://github.com"]
+	helper = 
+	helper = !/opt/homebrew/bin/gh auth git-credential
+[credential "https://gist.github.com"]
+	helper = 
+	helper = !/opt/homebrew/bin/gh auth git-credential

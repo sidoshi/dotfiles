@@ -8,6 +8,7 @@ du = "dust"
 
 [tools]
 "aqua:YS-L/csvlens" = "latest"
+"aqua:github/copilot-cli" = "latest"
 "aqua:jj" = "latest"
 aws = { version = "latest", symlink_bins = "true" }
 bat = "latest"
