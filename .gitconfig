@@ -9,3 +9,5 @@
 	helper = !/opt/homebrew/bin/gh auth git-credential
 [url "https://git.lab.sidoshi.net/sidoshi/"]
 	insteadOf = forge:
+[url "https://git.lab.sidoshi.net/gh/"]
+	insteadOf = forge:gh/
