@@ -11,3 +11,5 @@
 	insteadOf = forge:
 [url "https://git.lab.sidoshi.net/gh/"]
 	insteadOf = forge:gh/
+[url "https://git.lab.sidoshi.net/wholebit/"]
+	insteadOf = forge:wholebit/
