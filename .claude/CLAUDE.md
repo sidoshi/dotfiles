@@ -24,3 +24,8 @@ Follow this pattern:
 7. Open questions
 
 Do not use emojis (:dart:, :bar*chart:, :warning:) and bold for key terms. Explain the \_why*, not just the _what_.
+
+## Tools and secrets
+
+- Install tools with mise, not brew or other installers. Pin the tool per project in `mise.toml` when the project needs it.
+- Keep secrets in fnox. Do not write secrets to `.env` files or shell profiles.
