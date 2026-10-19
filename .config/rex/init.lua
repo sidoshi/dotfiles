@@ -115,8 +115,8 @@ picker("pick_session", "Pick Session…", "sessions")
 
 rex.bind("cmd+p", "pick_project")
 
--- cmd+alt+w: close the session after a confirm dialog.
-rex.bind("cmd+alt+w", function(ctx)
+-- alt+q: close the session after a confirm dialog.
+rex.bind("alt+q", function(ctx)
 	local label = "this session"
 	local list = rex.call("session.list")
 	for _, s in ipairs(list and list.sessions or {}) do
