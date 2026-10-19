@@ -28,7 +28,7 @@
   "file_finder": {
     "modal_max_width": "medium",
   },
-  "buffer_font_family": "JetBrains Mono",
+  "buffer_font_family": "Iosevka Term Extended",
   "ui_font_family": "Symbols Nerd Font Mono",
   // Vim mode settings
   "vim_mode": true,

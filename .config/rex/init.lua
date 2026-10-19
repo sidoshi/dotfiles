@@ -104,6 +104,8 @@ picker("pick_project", "Pick Project…", "projects")
 picker("pick_session", "Pick Session…", "sessions")
 
 rex.bind("cmd+p", "pick_project")
+rex.bind("cmd+alt+[", "session.previous")
+rex.bind("cmd+alt+]", "session.next")
 
 local shells = { zsh = true, ["-zsh"] = true, bash = true, sh = true, fish = true }
 
