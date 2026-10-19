@@ -64,10 +64,17 @@ rex.action({
 			label = label,
 			initial_windows = {
 				{
-					window_label = label,
+					window_label = "nvim",
 					layout = rex.layout.block({
 						flavor = "com.superlogical.terminal.shell",
 						options = { cwd = dir, initial_input = "nvim .\n" },
+					}),
+				},
+				{
+					window_label = "claude",
+					layout = rex.layout.block({
+						flavor = "com.superlogical.terminal.shell",
+						options = { cwd = dir, initial_input = "claude\n" },
 					}),
 				},
 			},
@@ -75,7 +82,10 @@ rex.action({
 		if cerr ~= nil then
 			error(cerr, 0)
 		end
-		rex.client.queue("session.select", { session_id = s.session_id })
+		rex.client.queue("session.select", {
+			session_id = s.session_id,
+			window_id = s.initial_windows[1].window_id,
+		})
 		return { session_id = s.session_id, created = true }
 	end,
 })
@@ -106,6 +116,8 @@ picker("pick_session", "Pick Session…", "sessions")
 rex.bind("cmd+p", "pick_project")
 rex.bind("cmd+alt+[", "session.previous")
 rex.bind("cmd+alt+]", "session.next")
+rex.bind("alt+[", "client.tab.previous")
+rex.bind("alt+]", "client.tab.next")
 
 local shells = { zsh = true, ["-zsh"] = true, bash = true, sh = true, fish = true }
 
