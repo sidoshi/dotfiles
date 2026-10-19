@@ -114,8 +114,6 @@ picker("pick_project", "Pick Project…", "projects")
 picker("pick_session", "Pick Session…", "sessions")
 
 rex.bind("cmd+p", "pick_project")
-rex.bind("cmd+alt+[", "session.previous")
-rex.bind("cmd+alt+]", "session.next")
 
 -- cmd+alt+w: close the session after a confirm dialog.
 rex.bind("cmd+alt+w", function(ctx)
@@ -136,11 +134,49 @@ rex.bind("cmd+alt+w", function(ctx)
 	if not r or not r.ok then
 		return true
 	end
-	rex.client.queue("session.close", {})
+	rex.call("session.destroy", { session_id = ctx.session_id })
 	return true
 end)
-rex.bind("alt+[", "client.tab.previous")
-rex.bind("alt+]", "client.tab.next")
+-- Cycle keys: ctrl acts on tabs in the session, alt acts on sessions.
+rex.bind("alt+tab", "session.next")
+rex.bind("alt+shift+tab", "session.previous")
+rex.bind("alt+[", "session.previous")
+rex.bind("alt+]", "session.next")
+
+-- ctrl+tab / ctrl+shift+tab: cycle tabs in the current session only.
+-- The app default follows the sidebar, which lists tabs of all sessions.
+-- These are actions, not key handlers, because only an action can queue session.select.
+local function cycle_tab(name, title, step)
+	rex.action({
+		name = name,
+		title = title,
+		run = function(ctx)
+			local view = rex.session.view({})
+			if not view or #view.windows < 2 then
+				return
+			end
+			local activeIndex = 1
+			for index, w in ipairs(view.windows) do
+				if w.window_id == view.active_window_id then
+					activeIndex = index
+				end
+			end
+			local nextIndex = (activeIndex - 1 + step) % #view.windows + 1
+			rex.client.queue("session.select", {
+				session_id = ctx.session_id,
+				window_id = view.windows[nextIndex].window_id,
+			})
+		end,
+	})
+end
+
+cycle_tab("session_tab_next", "Next Tab in Session", 1)
+cycle_tab("session_tab_previous", "Previous Tab in Session", -1)
+
+rex.bind("ctrl+tab", "session_tab_next")
+rex.bind("ctrl+shift+tab", "session_tab_previous")
+rex.bind("ctrl+[", "client.tab.previous")
+rex.bind("ctrl+]", "client.tab.next")
 
 local shells = { zsh = true, ["-zsh"] = true, bash = true, sh = true, fish = true }
 
