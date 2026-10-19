@@ -116,6 +116,29 @@ picker("pick_session", "Pick Session…", "sessions")
 rex.bind("cmd+p", "pick_project")
 rex.bind("cmd+alt+[", "session.previous")
 rex.bind("cmd+alt+]", "session.next")
+
+-- cmd+alt+w: close the session after a confirm dialog.
+rex.bind("cmd+alt+w", function(ctx)
+	local label = "this session"
+	local list = rex.call("session.list")
+	for _, s in ipairs(list and list.sessions or {}) do
+		if s.session_id == ctx.session_id then
+			label = s.label
+		end
+	end
+	local r = rex.exec({
+		"osascript",
+		"-e",
+		'tell application "Rex Beta" to display dialog "Close session '
+			.. label
+			.. '?" buttons {"Cancel", "Close"} default button "Close" cancel button "Cancel" with icon caution',
+	})
+	if not r or not r.ok then
+		return true
+	end
+	rex.client.queue("session.close", {})
+	return true
+end)
 rex.bind("alt+[", "client.tab.previous")
 rex.bind("alt+]", "client.tab.next")
 
