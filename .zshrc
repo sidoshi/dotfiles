@@ -16,7 +16,6 @@ else
 fi
 
 # Always-on essentials: prompt + directory jumping
-eval "$(zoxide init zsh)"
 source <(/opt/homebrew/bin/starship init zsh --print-full-init)
 eval "$(atuin init zsh --disable-up-arrow)"
 
@@ -62,3 +61,4 @@ brew() {
   esac
 }
 
+eval "$(zoxide init zsh)"

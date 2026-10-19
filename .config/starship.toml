@@ -12,6 +12,9 @@ $character"""
 success_symbol = "[❯](bold green)"
 error_symbol = "[❯](bold red)"
 
+[fill]
+symbol = " "
+
 [cmd_duration]
 min_time = 1000
 format = "[$duration](bold yellow) "

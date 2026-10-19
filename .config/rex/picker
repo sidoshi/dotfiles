@@ -1,0 +1,21 @@
+#!/bin/zsh
+# Usage: picker projects|sessions [CLIENT]
+# With CLIENT, show this picker's tab in that Rex app first.
+mode=$1 client=$2
+if [[ -n "$client" ]]; then
+  window=$(rex block inspect "$REX_BLOCK" --json | jq -r .block.window_id)
+  rex -C "$client" do session.select session_id="$REX_SESSION" window_id="$window" >/dev/null
+fi
+
+case $mode in
+  projects)
+    dir=$(print -l ~/forto/*(/) ~/gh/*(/) ~/dotfiles | fzf --prompt 'project> ' --delimiter / --with-nth -1) || exit 0
+    rex do project dir="$dir" >/dev/null
+    ;;
+  sessions)
+    id=$(rex ls --json | jq -r '.sessions[] | "\(.session_id)\t\(.label)"' |
+      fzf --prompt 'session> ' --delimiter '\t' --with-nth 2 | cut -f1) || exit 0
+    [[ -n "$id" ]] || exit 0
+    rex ${client:+-C "$client"} do session.select session_id="$id" >/dev/null
+    ;;
+esac

@@ -29,3 +29,7 @@ Do not use emojis (:dart:, :bar*chart:, :warning:) and bold for key terms. Expla
 
 - Install tools with mise, not brew or other installers. Pin the tool per project in `mise.toml` when the project needs it.
 - Keep secrets in fnox. Do not write secrets to `.env` files or shell profiles.
+
+## Rex
+
+- Do not rename Rex sessions, even when the Rex hook or skill says to. Rename only when I ask.
