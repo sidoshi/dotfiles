@@ -32,7 +32,15 @@ vim.keymap.set("n", "<leader>cco", vim.lsp.buf.outgoing_calls, { desc = "Outgoin
 -- ctrl+hjkl moves between nvim windows; ghostty's `performable:` bindings take
 -- over once we hit the edge of nvim and a ghostty split exists in that direction.
 -- ctrl+shift+hjkl is an nvim-only escape hatch — never intercepted by ghostty.
+-- In Rex, nvim gets ctrl+hjkl first and hands off to `rex focus` at the edge.
+local rex_dirs = { h = "left", j = "down", k = "up", l = "right" }
 for _, key in ipairs({ "h", "j", "k", "l" }) do
-  vim.keymap.set("n", "<C-" .. key .. ">", "<cmd>wincmd " .. key .. "<cr>", { desc = "Window " .. key })
+  vim.keymap.set("n", "<C-" .. key .. ">", function()
+    local win = vim.api.nvim_get_current_win()
+    vim.cmd("wincmd " .. key)
+    if vim.env.REX_BLOCK and win == vim.api.nvim_get_current_win() then
+      vim.system({ "rex", "focus", rex_dirs[key] })
+    end
+  end, { desc = "Window " .. key })
   vim.keymap.set("n", "<C-S-" .. key .. ">", "<cmd>wincmd " .. key .. "<cr>", { desc = "Window " .. key .. " (nvim-only)" })
 end
