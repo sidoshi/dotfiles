@@ -198,6 +198,133 @@ for tabNumber = 1, 9 do
 	rex.bind("ctrl+" .. tabNumber, name)
 end
 
+-- cmd+j: show a letter in front of every tab name in all sessions, then press the letter to go to that tab.
+-- Any other key cancels. A small floating terminal reads the key, because a Rex mode would show a hint popup.
+-- The letters are written into the tab labels as "[a] name", and removed again before the jump.
+-- The labels are the only state, so a config reload in between does not leave letters behind.
+local jumpHints = "asdfghjklqwertyuiopzxcvbnm"
+-- A tab keeps its letter while it is open, so the letters can be learned. Kept in memory until the config reloads.
+local jumpHintByWindow = {}
+
+-- Calls visit(session_id, window, title) for every tab of every session, in sidebar order.
+local function each_tab(visit)
+	local list = rex.call("session.list")
+	for _, s in ipairs(list and list.sessions or {}) do
+		-- Lua can only read or change a session it is attached to.
+		rex.call("session.attach", { session_id = s.session_id })
+		local view = rex.session.view({ session_id = s.session_id })
+		for _, w in ipairs(view and view.windows or {}) do
+			local title = rex.block.call(terminal, "title", { session_id = s.session_id, block_id = w.focused_block_id })
+			visit(s.session_id, w, title and title.title or "")
+		end
+	end
+end
+
+local function remove_jump_hints()
+	each_tab(function(session_id, w, title)
+		local name = w.label
+		while name:match("^%[%a%] ") do
+			name = name:sub(5)
+		end
+		if name == w.label then
+			return
+		end
+		-- A tab without its own name showed the terminal title. An empty label gives it the default name back.
+		if name == title then
+			name = ""
+		end
+		rex.call("session.set_window_label", { session_id = session_id, window_id = w.window_id, label = name })
+	end)
+end
+
+rex.action({
+	name = "jump_start",
+	title = "Jump to Tab…",
+	run = function(ctx)
+		remove_jump_hints()
+		local openTabs = {}
+		each_tab(function(session_id, w, title)
+			table.insert(openTabs, { session_id = session_id, window = w, title = title })
+		end)
+
+		-- Free the letters of closed tabs, then give each new tab the first free letter.
+		local isOpen = {}
+		for _, tab in ipairs(openTabs) do
+			isOpen[tab.window.window_id] = true
+		end
+		local isLetterUsed = {}
+		for windowID, hint in pairs(jumpHintByWindow) do
+			if isOpen[windowID] then
+				isLetterUsed[hint] = true
+			else
+				jumpHintByWindow[windowID] = nil
+			end
+		end
+		for _, tab in ipairs(openTabs) do
+			if not jumpHintByWindow[tab.window.window_id] then
+				for index = 1, #jumpHints do
+					local hint = jumpHints:sub(index, index)
+					if not isLetterUsed[hint] then
+						jumpHintByWindow[tab.window.window_id] = hint
+						isLetterUsed[hint] = true
+						break
+					end
+				end
+			end
+		end
+
+		for _, tab in ipairs(openTabs) do
+			-- Past 26 tabs, a tab has no letter.
+			local hint = jumpHintByWindow[tab.window.window_id]
+			if hint then
+				local name = tab.window.label
+				if tab.window.label == "Window " .. tab.window.window_id:sub(-8) and tab.title ~= "" then
+					name = tab.title
+				end
+				rex.call("session.set_window_label", {
+					session_id = tab.session_id,
+					window_id = tab.window.window_id,
+					label = "[" .. hint .. "] " .. name,
+				})
+			end
+		end
+		local _, err = rex.call("session.new_layer", {
+			session_id = ctx.session_id,
+			bounds = { 0.3, 0.4, 0.4, 0.1 },
+			focus = true,
+			layout = rex.layout.block({
+				flavor = "com.superlogical.terminal.shell",
+				options = { command = { os.getenv("HOME") .. "/.config/rex/picker", "jump", ctx.client_id } },
+			}),
+		})
+		if err ~= nil then
+			remove_jump_hints()
+			error(err, 0)
+		end
+	end,
+})
+
+rex.action({
+	name = "jump_to",
+	title = "Jump to Tab with Letter",
+	args = { hint = "string" },
+	run = function(ctx, args)
+		local target = nil
+		each_tab(function(session_id, w)
+			if args.hint ~= "" and w.label:sub(1, 4) == "[" .. args.hint .. "] " then
+				target = { session_id = session_id, window_id = w.window_id }
+			end
+		end)
+		remove_jump_hints()
+		if not target then
+			return
+		end
+		rex.client.queue("session.select", target)
+	end,
+})
+
+rex.bind("cmd+j", "jump_start")
+
 local shells = { zsh = true, ["-zsh"] = true, bash = true, sh = true, fish = true }
 
 -- cmd+w: close the pane, but ask first when a program other than the shell runs in it.
