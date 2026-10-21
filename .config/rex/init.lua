@@ -178,6 +178,26 @@ rex.bind("ctrl+shift+tab", "session_tab_previous")
 rex.bind("ctrl+[", "client.tab.previous")
 rex.bind("ctrl+]", "client.tab.next")
 
+-- ctrl+1..9: go to tab N of the current session. cmd+1..9 counts tabs of all sessions.
+for tabNumber = 1, 9 do
+	local name = "session_tab_" .. tabNumber
+	rex.action({
+		name = name,
+		title = "Go to Tab " .. tabNumber .. " in Session",
+		run = function(ctx)
+			local view = rex.session.view({})
+			if not view or not view.windows[tabNumber] then
+				return
+			end
+			rex.client.queue("session.select", {
+				session_id = ctx.session_id,
+				window_id = view.windows[tabNumber].window_id,
+			})
+		end,
+	})
+	rex.bind("ctrl+" .. tabNumber, name)
+end
+
 local shells = { zsh = true, ["-zsh"] = true, bash = true, sh = true, fish = true }
 
 -- cmd+w: close the pane, but ask first when a program other than the shell runs in it.
