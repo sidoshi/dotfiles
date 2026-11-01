@@ -17,6 +17,8 @@ fi
 
 # Always-on essentials: prompt + directory jumping
 source <(/opt/homebrew/bin/starship init zsh --print-full-init)
+# atuin comes from mise, which loads only on `up`. Its shell hooks run on every command, so put the binary on PATH directly.
+export PATH="$HOME/.local/share/mise/installs/atuin/latest/atuin-aarch64-apple-darwin:$PATH"
 eval "$(atuin init zsh --disable-up-arrow)"
 
 # `up` — promote bare-bones shell into a smarter shell.

@@ -1,4 +1,3 @@
-brew "atuin"
 brew "cocoapods"
 brew "coreutils"
 brew "curl"

@@ -23,7 +23,7 @@ stow --adopt .
 
 Install Oh My Zsh (with the KEEP_ZSHRC=yes flag).
 
-Sign in to atuin and sync
+Sign in to atuin and sync. Then run `atuin threads import` to index existing agent sessions (`atuin resume` to search and resume them).
 
 ## Secret Management
 

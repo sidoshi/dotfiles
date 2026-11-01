@@ -247,8 +247,11 @@ records = true
 # strategy = "auto"
 
 [daemon]
-## Enables using the daemon to sync. Requires the daemon to be running in the background. Start it with `atuin daemon`
-# enabled = false
+## Enables using the daemon to sync.
+enabled = true
+
+## Automatically start and manage the daemon when needed.
+autostart = true
 
 ## How often the daemon should sync in seconds
 # sync_frequency = 300
@@ -289,3 +292,7 @@ records = true
 # filters = [ "global", "host", "session", "session-preload", "workspace", "directory" ]
 [dotfiles]
 enabled = true
+
+[threads]
+## Capture AI agent sessions (Claude Code, Codex, ...) and sync them. Search and resume with `atuin resume`.
+capture = true

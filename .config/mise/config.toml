@@ -8,6 +8,7 @@ du = "dust"
 
 [tools]
 age = "latest"
+atuin = "latest"
 "aqua:YS-L/csvlens" = "latest"
 "aqua:auth0/auth0-cli" = "latest"
 "aqua:github/copilot-cli" = "latest"
