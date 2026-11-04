@@ -48,6 +48,10 @@ rex.action({
 			error("project: dir is required", 0)
 		end
 		local label = dir:match("([^/]+)$")
+		local agent = args.agent or "claude"
+		if agent ~= "claude" and agent ~= "pi" then
+			error("project: agent must be claude or pi", 0)
+		end
 
 		local list, err = rex.call("session.list")
 		if err ~= nil then
@@ -55,7 +59,33 @@ rex.action({
 		end
 		for _, s in ipairs(list.sessions) do
 			if s.label == label then
-				rex.client.queue("session.select", { session_id = s.session_id })
+				if agent == "claude" then
+					rex.client.queue("session.select", { session_id = s.session_id })
+					return { session_id = s.session_id, created = false }
+				end
+
+				rex.call("session.attach", { session_id = s.session_id })
+				local view = rex.session.view({ session_id = s.session_id })
+				for _, w in ipairs(view and view.windows or {}) do
+					if w.label == "pi" then
+						rex.client.queue("session.select", { session_id = s.session_id, window_id = w.window_id })
+						return { session_id = s.session_id, created = false }
+					end
+				end
+
+				local w, werr = rex.session.new_window({
+					session_id = s.session_id,
+					window_label = "pi",
+					focus = false,
+					layout = rex.layout.block({
+						flavor = "com.superlogical.terminal.shell",
+						options = { cwd = dir, initial_input = "pi\n" },
+					}),
+				})
+				if werr ~= nil then
+					error(werr, 0)
+				end
+				rex.client.queue("session.select", { session_id = s.session_id, window_id = w.window_id })
 				return { session_id = s.session_id, created = false }
 			end
 		end
@@ -71,10 +101,10 @@ rex.action({
 					}),
 				},
 				{
-					window_label = "claude",
+					window_label = agent,
 					layout = rex.layout.block({
 						flavor = "com.superlogical.terminal.shell",
-						options = { cwd = dir, initial_input = "claude\n" },
+						options = { cwd = dir, initial_input = agent .. "\n" },
 					}),
 				},
 			},
@@ -111,9 +141,11 @@ local function picker(name, title, mode)
 end
 
 picker("pick_project", "Pick Project…", "projects")
+picker("pick_project_pi", "Pick Project with Pi…", "projects_pi")
 picker("pick_session", "Pick Session…", "sessions")
 
 rex.bind("cmd+p", "pick_project")
+rex.bind("cmd+alt+p", "pick_project_pi")
 
 -- alt+q: close the session after a confirm dialog.
 rex.bind("alt+q", function(ctx)

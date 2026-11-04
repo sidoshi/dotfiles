@@ -1,5 +1,5 @@
 #!/bin/zsh
-# Usage: picker projects|sessions [CLIENT]
+# Usage: picker projects|projects_pi|sessions|jump [CLIENT]
 # With CLIENT, show this picker's tab in that Rex app first.
 mode=$1 client=$2
 if [[ -n "$client" ]]; then
@@ -8,9 +8,13 @@ if [[ -n "$client" ]]; then
 fi
 
 case $mode in
-  projects)
+  projects|projects_pi)
     dir=$(print -l ~/forto/*(/) ~/gh/*(/) ~/dotfiles | fzf --prompt 'project> ' --delimiter / --with-nth -1) || exit 0
-    rex do project dir="$dir" >/dev/null
+    if [[ "$mode" == projects_pi ]]; then
+      rex do project dir="$dir" agent=pi >/dev/null
+    else
+      rex do project dir="$dir" >/dev/null
+    fi
     ;;
   sessions)
     id=$(rex ls --json | jq -r '.sessions[] | "\(.session_id)\t\(.label)"' |

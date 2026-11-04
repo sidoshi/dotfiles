@@ -1,0 +1,13 @@
+{
+  "$schema": "https://pi.dev/schemas/models.schema.json",
+  "providers": {
+    "openrouter": {
+      "modelOverrides": {
+        "moonshotai/kimi-k3.1-pro": { "maxTokens": 32768 },
+        "moonshotai/kimi-k3": { "maxTokens": 32768 },
+        "deepseek/deepseek-v4-pro": { "maxTokens": 32768 },
+        "moonshotai/kimi-k2.6": { "maxTokens": 32768 }
+      }
+    }
+  }
+}

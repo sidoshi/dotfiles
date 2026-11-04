@@ -25,6 +25,17 @@ Install Oh My Zsh (with the KEEP_ZSHRC=yes flag).
 
 Sign in to atuin and sync. Then run `atuin threads import` to index existing agent sessions (`atuin resume` to search and resume them).
 
+## Rex
+
+- `Cmd+P`: open a project with nvim and Claude.
+- `Cmd+Alt+P`: open a project with nvim and Pi. If the project is already open, this selects its Pi tab or creates one.
+
+Pi reports working, blocked, done, and error states to Rex through the Program Status Protocol.
+
+Keep Rex's appearance set to Dark and disable **Settings > Interface > Panes > Match program backgrounds**. Otherwise macOS appearance changes and Pi's fullscreen background can change Rex's colors.
+
+Pi uses its fixed `dark` theme from `.pi/agent/settings.json` instead of deriving colors from the terminal.
+
 ## Secret Management
 
 Secrets are managed with [fnox](https://github.com/fnox-dev/fnox), an age-based secret store. fnox is installed automatically via mise (declared in `.config/mise/config.toml`).

@@ -1,0 +1,13 @@
+{
+  "lastChangelogVersion": "1.5.0",
+  "theme": "dark",
+  "defaultProvider": "openrouter",
+  "defaultModel": "moonshotai/kimi-k2.6",
+  "defaultThinkingLevel": "high",
+  "enabledModels": [
+    "moonshotai/kimi-k3.1-pro",
+    "moonshotai/kimi-k3",
+    "deepseek/deepseek-v4-pro"
+  ],
+  "hideThinkingBlock": true
+}
