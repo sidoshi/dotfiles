@@ -149,28 +149,35 @@ picker("pick_session", "Pick Session…", "sessions")
 rex.bind("cmd+p", "pick_project")
 rex.bind("cmd+alt+p", "pick_project_pi")
 
--- alt+q: close the session after a confirm dialog.
-rex.bind("alt+q", function(ctx)
-	local label = "this session"
-	local list = rex.call("session.list")
-	for _, s in ipairs(list and list.sessions or {}) do
-		if s.session_id == ctx.session_id then
-			label = s.label
+-- alt+q: close the session after a confirm question in the command palette.
+-- This is an action, not a key handler, because only an action can ask a question with rex.ui.pick.
+rex.action({
+	name = "close_session",
+	title = "Close Session…",
+	run = function(ctx)
+		local label = "this session"
+		local list = rex.call("session.list")
+		for _, s in ipairs(list and list.sessions or {}) do
+			if s.session_id == ctx.session_id then
+				label = s.label
+			end
 		end
-	end
-	local r = rex.exec({
-		"osascript",
-		"-e",
-		'tell application id "com.superlogical.rex" to display dialog "Close session '
-			.. label
-			.. '?" buttons {"Cancel", "Close"} default button "Close" cancel button "Cancel" with icon caution',
-	})
-	if not r or not r.ok then
-		return true
-	end
-	rex.call("session.destroy", { session_id = ctx.session_id })
-	return true
-end)
+		-- Return selects the first item. Escape cancels and gives nil.
+		local answer = rex.ui.pick({
+			title = "Close session " .. label .. "?",
+			items = {
+				{ id = "close", title = "Close session" },
+				{ id = "cancel", title = "Cancel" },
+			},
+		})
+		if answer ~= "close" then
+			return
+		end
+		rex.call("session.destroy", { session_id = ctx.session_id })
+	end,
+})
+
+rex.bind("alt+q", "close_session")
 -- Cycle keys: ctrl acts on tabs in the session, alt acts on sessions.
 rex.bind("alt+tab", "session.next")
 rex.bind("alt+shift+tab", "session.previous")
@@ -365,24 +372,29 @@ rex.bind("cmd+k", "pane.new_floating")
 local shells = { zsh = true, ["-zsh"] = true, bash = true, sh = true, fish = true }
 
 -- cmd+w: close the pane, but ask first when a program other than the shell runs in it.
-rex.bind("cmd+w", function(ctx)
-	local p = rex.block.call(terminal, "process", { block_id = ctx.block_id })
-	local fg = p and p.foreground
-	if fg and not shells[fg.argv0 or fg.name] then
-		local r = rex.exec({
-			"osascript",
-			"-e",
-			'tell application id "com.superlogical.rex" to display dialog "Close the pane running '
-				.. (fg.argv0 or fg.name)
-				.. '?" buttons {"Cancel", "Close"} default button "Close" cancel button "Cancel" with icon caution',
-		})
-		if not r or not r.ok then
-			return true
+rex.action({
+	name = "close_pane",
+	title = "Close Pane, Ask if a Program Runs",
+	run = function(ctx)
+		local p = rex.block.call(terminal, "process", { block_id = ctx.block_id })
+		local fg = p and p.foreground
+		if fg and not shells[fg.argv0 or fg.name] then
+			local answer = rex.ui.pick({
+				title = "Close the pane running " .. (fg.argv0 or fg.name) .. "?",
+				items = {
+					{ id = "close", title = "Close pane" },
+					{ id = "cancel", title = "Cancel" },
+				},
+			})
+			if answer ~= "close" then
+				return
+			end
 		end
-	end
-	rex.call("block.close", { session_id = ctx.session_id, block_id = ctx.block_id })
-	return true
-end)
+		rex.call("block.close", { session_id = ctx.session_id, block_id = ctx.block_id })
+	end,
+})
+
+rex.bind("cmd+w", "close_pane")
 
 -- Rex keeps interface settings in the app preferences, not in this file.
 -- This action sets them, so a new machine gets the same look. Run it one time with: rex do apply_look
