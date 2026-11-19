@@ -383,3 +383,22 @@ rex.bind("cmd+w", function(ctx)
 	rex.call("block.close", { session_id = ctx.session_id, block_id = ctx.block_id })
 	return true
 end)
+
+-- Rex keeps interface settings in the app preferences, not in this file.
+-- This action sets them, so a new machine gets the same look. Run it one time with: rex do apply_look
+rex.action({
+	name = "apply_look",
+	title = "Apply Look from Config",
+	run = function()
+		local interface = "client.setting.interface."
+		rex.client.queue(interface .. "appearance.style", { value = "glass" })
+		rex.client.queue(interface .. "appearance.glass", { value = true })
+		rex.client.queue(interface .. "active_panes.fade", { value = "both" })
+		rex.client.queue(interface .. "active_panes.active_border", { value = true })
+		rex.client.queue(interface .. "active_panes.active_border_color", { value = "text" })
+		-- Opacity is a percentage, from 10 to 100.
+		rex.client.queue(interface .. "active_panes.active_border_opacity", { value = 50 })
+		rex.client.queue(interface .. "pane_padding.horizontal", { value = 12 })
+		rex.client.queue(interface .. "pane_padding.vertical", { value = 8 })
+	end,
+})
