@@ -26,9 +26,10 @@
     "resize_bottom_right": "",
     "move_next_screen": "",
     "move_previous_screen": "",
-    "scratchpad": "command+shift+space",
+    "scratchpad": "",
     "emoji_picker": "command+control+space",
-    "clipboard_manager": "command+option+v"
+    "clipboard_manager": "command+option+v",
+    "file:///Applications/LocalSend.app/": "command+shift+o"
   },
   "showInAppBrowserBookMarks": true,
   "hasDismissedGettingStarted": true,
