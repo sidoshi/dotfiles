@@ -159,7 +159,7 @@ rex.bind("alt+q", function(ctx)
 	local r = rex.exec({
 		"osascript",
 		"-e",
-		'tell application "Rex Beta" to display dialog "Close session '
+		'tell application id "com.superlogical.rex" to display dialog "Close session '
 			.. label
 			.. '?" buttons {"Cancel", "Close"} default button "Close" cancel button "Cancel" with icon caution',
 	})
@@ -367,7 +367,7 @@ rex.bind("cmd+w", function(ctx)
 		local r = rex.exec({
 			"osascript",
 			"-e",
-			'tell application "Rex Beta" to display dialog "Close the pane running '
+			'tell application id "com.superlogical.rex" to display dialog "Close the pane running '
 				.. (fg.argv0 or fg.name)
 				.. '?" buttons {"Cancel", "Close"} default button "Close" cancel button "Cancel" with icon caution',
 		})
