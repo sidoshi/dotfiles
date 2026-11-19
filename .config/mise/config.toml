@@ -23,9 +23,10 @@ gcloud = "latest"
 kubectl = "latest"
 lsd = "latest"
 node = "22"
-"npm:@anthropic-ai/claude-code" = "latest"
+claude = "latest"
 pi = "latest"
-python = "latest"
+# gcloud needs Python 3.14 to install. "latest" stays the default python3.
+python = ["latest", "3.14"]
 restic = "latest"
 rust = "latest"
 shellcheck = "latest"
