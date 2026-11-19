@@ -125,8 +125,10 @@ local function picker(name, title, mode)
 		name = name,
 		title = title,
 		run = function(ctx)
-			local _, err = rex.session.new_window({
-				window_label = mode,
+			-- A layer is a floating pane on top of the current tab. It closes when the picker exits.
+			local _, err = rex.call("session.new_layer", {
+				session_id = ctx.session_id,
+				bounds = { 0.25, 0.2, 0.5, 0.6 },
 				focus = true,
 				layout = rex.layout.block({
 					flavor = "com.superlogical.terminal.shell",
@@ -356,6 +358,9 @@ rex.action({
 })
 
 rex.bind("cmd+j", "jump_start")
+
+-- cmd+k: open a new floating pane, used as a quick terminal.
+rex.bind("cmd+k", "pane.new_floating")
 
 local shells = { zsh = true, ["-zsh"] = true, bash = true, sh = true, fish = true }
 
