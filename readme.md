@@ -30,6 +30,12 @@ Sign in to atuin and sync. Then run `atuin threads import` to index existing age
 
 Pi reports working, blocked, done, and error states to Rex through the Program Status Protocol.
 
+Rex keeps interface settings in the app preferences, not in `init.lua`. On a new machine, run this one time to set the pane border, padding, glass style, and fade:
+
+```zsh
+rex do apply_look
+```
+
 Keep Rex's appearance set to Dark and disable **Settings > Interface > Panes > Match program backgrounds**. Otherwise macOS appearance changes and Pi's fullscreen background can change Rex's colors.
 
 Pi uses its fixed `dark` theme from `.pi/agent/settings.json` instead of deriving colors from the terminal.
