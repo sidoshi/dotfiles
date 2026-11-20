@@ -1,5 +1,6 @@
 #!/bin/zsh
-# Usage: picker projects|projects_pi|sessions|jump [CLIENT]
+# Usage: picker jump [CLIENT]
+# Reads one key press for the tab jump. rex.ui.pick cannot read one key, so this stays a script.
 # With CLIENT, show this picker's tab in that Rex app first.
 mode=$1 client=$2
 if [[ -n "$client" ]]; then
@@ -8,20 +9,6 @@ if [[ -n "$client" ]]; then
 fi
 
 case $mode in
-  projects|projects_pi)
-    dir=$(print -l ~/forto/*(/) ~/gh/*(/) ~/dotfiles | fzf --prompt 'project> ' --delimiter / --with-nth -1) || exit 0
-    if [[ "$mode" == projects_pi ]]; then
-      rex do project dir="$dir" agent=pi >/dev/null
-    else
-      rex do project dir="$dir" >/dev/null
-    fi
-    ;;
-  sessions)
-    id=$(rex ls --json | jq -r '.sessions[] | "\(.session_id)\t\(.label)"' |
-      fzf --prompt 'session> ' --delimiter '\t' --with-nth 2 | cut -f1) || exit 0
-    [[ -n "$id" ]] || exit 0
-    rex ${client:+-C "$client"} do session.select session_id="$id" >/dev/null
-    ;;
   jump)
     print -n 'Press the letter of a tab. Any other key cancels. '
     read -k 1 key

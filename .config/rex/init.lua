@@ -120,31 +120,53 @@ rex.action({
 	end,
 })
 
-local function picker(name, title, mode)
+-- The pickers ask their question in the command palette with rex.ui.pick.
+local function project_picker(name, title, agent)
 	rex.action({
 		name = name,
 		title = title,
 		run = function(ctx)
-			-- A layer is a floating pane on top of the current tab. It closes when the picker exits.
-			local _, err = rex.call("session.new_layer", {
-				session_id = ctx.session_id,
-				bounds = { 0.25, 0.2, 0.5, 0.6 },
-				focus = true,
-				layout = rex.layout.block({
-					flavor = "com.superlogical.terminal.shell",
-					options = { command = { os.getenv("HOME") .. "/.config/rex/picker", mode, ctx.client_id } },
-				}),
-			})
-			if err ~= nil then
-				error(err, 0)
+			-- (/N) keeps only directories, and gives no error when a parent directory is absent.
+			local listing = rex.exec({ "zsh", "-c", "print -l ~/forto/*(/N) ~/gh/*(/N) ~/dotfiles" })
+			if not listing or not listing.ok then
+				error("pick project: cannot list the project directories", 0)
 			end
+			local items = {}
+			for dir in listing.stdout:gmatch("[^\n]+") do
+				table.insert(items, { id = dir, title = dir:match("([^/]+)$") })
+			end
+			-- Escape cancels and gives nil.
+			local dir = rex.ui.pick({ title = title, items = items })
+			if not dir then
+				return
+			end
+			return rex.invoke("project", { dir = dir, agent = agent })
 		end,
 	})
 end
 
-picker("pick_project", "Pick Project…", "projects")
-picker("pick_project_pi", "Pick Project with Pi…", "projects_pi")
-picker("pick_session", "Pick Session…", "sessions")
+project_picker("pick_project", "Pick Project…", "claude")
+project_picker("pick_project_pi", "Pick Project with Pi…", "pi")
+
+rex.action({
+	name = "pick_session",
+	title = "Pick Session…",
+	run = function(ctx)
+		local list, err = rex.call("session.list")
+		if err ~= nil then
+			error(err, 0)
+		end
+		local items = {}
+		for _, s in ipairs(list.sessions) do
+			table.insert(items, { id = s.session_id, title = s.label })
+		end
+		local session_id = rex.ui.pick({ title = "Pick Session…", items = items })
+		if not session_id then
+			return
+		end
+		rex.client.queue("session.select", { session_id = session_id })
+	end,
+})
 
 rex.bind("cmd+p", "pick_project")
 rex.bind("cmd+alt+p", "pick_project_pi")
