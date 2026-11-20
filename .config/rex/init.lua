@@ -39,6 +39,9 @@ for _, key in ipairs({ "j", "k" }) do
 	end)
 end
 
+-- The nvim floating pane: x, y, width, height as fractions of the tab. 96% of each, in the center.
+local nvimFloatingBounds = { 0.02, 0.02, 0.96, 0.96 }
+
 rex.action({
 	name = "project",
 	title = "Open Project",
@@ -93,29 +96,48 @@ rex.action({
 		local s, cerr = rex.call("session.create", {
 			label = label,
 			initial_windows = {
-				-- One tab: the agent on the left, nvim on the right.
-				-- Rex gives the focus to the first block, thus the agent has the focus.
+				-- One tab with only the agent. nvim is added below as a minimized floating pane.
 				-- The tab has the agent's name, so the search for a "pi" tab above still finds it.
 				{
 					window_label = agent,
-					layout = rex.layout.horizontal(
-						-- The agent gets 40% of the width, nvim gets 60%.
-						0.4,
-						rex.layout.block({
-							flavor = "com.superlogical.terminal.shell",
-							options = { cwd = dir, initial_input = agent .. "\n" },
-						}),
-						rex.layout.block({
-							flavor = "com.superlogical.terminal.shell",
-							options = { cwd = dir, initial_input = "nvim .\n" },
-						})
-					),
+					layout = rex.layout.block({
+						flavor = "com.superlogical.terminal.shell",
+						options = { cwd = dir, initial_input = agent .. "\n" },
+					}),
 				},
 			},
 		})
 		if cerr ~= nil then
 			error(cerr, 0)
 		end
+
+		-- nvim starts in a minimized floating pane. cmd+alt+n shows it and hides it again.
+		-- Lua can only change a session it is attached to.
+		rex.call("session.attach", { session_id = s.session_id })
+		local nvimLayer, layerError = rex.call("session.new_layer", {
+			session_id = s.session_id,
+			window_id = s.initial_windows[1].window_id,
+			bounds = nvimFloatingBounds,
+			focus = false,
+			layout = rex.layout.block({
+				flavor = "com.superlogical.terminal.shell",
+				-- cmd+alt+n finds the pane by this label.
+				label = "nvim",
+				options = { cwd = dir, initial_input = "nvim .\n" },
+			}),
+		})
+		if layerError ~= nil then
+			error(layerError, 0)
+		end
+		local _, minimizeError = rex.call("session.set_layer_state", {
+			session_id = s.session_id,
+			layer_id = nvimLayer.layer_id,
+			state = "minimized",
+		})
+		if minimizeError ~= nil then
+			error(minimizeError, 0)
+		end
+
 		rex.client.queue("session.select", {
 			session_id = s.session_id,
 			window_id = s.initial_windows[1].window_id,
@@ -262,6 +284,98 @@ project_picker("pick_project_pi", "Pick Project or Session with Pi…", "pi")
 
 rex.bind("cmd+p", "pick_project")
 rex.bind("cmd+alt+p", "pick_project_pi")
+
+-- cmd+alt+n: show or hide the nvim floating pane of the current tab.
+-- The pane is found by its label "nvim". If the tab has no such pane, the action makes one
+-- in the directory of the focused pane.
+rex.action({
+	name = "toggle_nvim",
+	title = "Show or Hide Nvim",
+	run = function(ctx)
+		local view = rex.session.view({})
+		if not view then
+			error("toggle nvim: cannot read the session", 0)
+		end
+
+		local nvimLayer = nil
+		for _, w in ipairs(view.windows) do
+			if w.window_id == view.active_window_id then
+				for _, layer in ipairs(w.layers or {}) do
+					for _, block in ipairs(layer.blocks or {}) do
+						if layer.kind == "floating" and block.label == "nvim" then
+							nvimLayer = layer
+						end
+					end
+				end
+			end
+		end
+
+		if nvimLayer and nvimLayer.state == "minimized" then
+			local _, showError = rex.call("session.set_layer_state", {
+				session_id = ctx.session_id,
+				layer_id = nvimLayer.layer_id,
+				state = "normal",
+				focus = true,
+			})
+			if showError ~= nil then
+				error(showError, 0)
+			end
+			return
+		end
+
+		if nvimLayer then
+			local _, hideError = rex.call("session.set_layer_state", {
+				session_id = ctx.session_id,
+				layer_id = nvimLayer.layer_id,
+				state = "minimized",
+			})
+			if hideError ~= nil then
+				error(hideError, 0)
+			end
+			return
+		end
+
+		-- No nvim pane in this tab: make one.
+		local process = rex.block.call(terminal, "process", { block_id = ctx.block_id })
+		if not process then
+			error("toggle nvim: cannot read the process of the focused pane", 0)
+		end
+
+		-- The foreground program (for example claude) has the directory the pane works in.
+		-- At a shell prompt there can be no foreground entry, so the shell is the fallback.
+		local currentDirectory = nil
+		if process.foreground and process.foreground.cwd then
+			currentDirectory = process.foreground.cwd
+		end
+		if not currentDirectory then
+			for _, ancestor in ipairs(process.ancestors or {}) do
+				if ancestor.cwd then
+					currentDirectory = ancestor.cwd
+					break
+				end
+			end
+		end
+		if not currentDirectory then
+			error("toggle nvim: cannot find the directory of the focused pane", 0)
+		end
+
+		local _, layerError = rex.call("session.new_layer", {
+			session_id = ctx.session_id,
+			bounds = nvimFloatingBounds,
+			focus = true,
+			layout = rex.layout.block({
+				flavor = "com.superlogical.terminal.shell",
+				label = "nvim",
+				options = { cwd = currentDirectory, initial_input = "nvim .\n" },
+			}),
+		})
+		if layerError ~= nil then
+			error(layerError, 0)
+		end
+	end,
+})
+
+rex.bind("cmd+alt+n", "toggle_nvim")
 
 -- alt+q: close the session after a confirm question in the command palette.
 -- This is an action, not a key handler, because only an action can ask a question with rex.ui.pick.
