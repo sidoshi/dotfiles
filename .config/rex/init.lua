@@ -93,19 +93,21 @@ rex.action({
 		local s, cerr = rex.call("session.create", {
 			label = label,
 			initial_windows = {
-				{
-					window_label = "nvim",
-					layout = rex.layout.block({
-						flavor = "com.superlogical.terminal.shell",
-						options = { cwd = dir, initial_input = "nvim .\n" },
-					}),
-				},
+				-- One tab: nvim on the left, the agent on the right.
+				-- The tab has the agent's name, so the search for a "pi" tab above still finds it.
 				{
 					window_label = agent,
-					layout = rex.layout.block({
-						flavor = "com.superlogical.terminal.shell",
-						options = { cwd = dir, initial_input = agent .. "\n" },
-					}),
+					layout = rex.layout.horizontal(
+						0.5,
+						rex.layout.block({
+							flavor = "com.superlogical.terminal.shell",
+							options = { cwd = dir, initial_input = "nvim .\n" },
+						}),
+						rex.layout.block({
+							flavor = "com.superlogical.terminal.shell",
+							options = { cwd = dir, initial_input = agent .. "\n" },
+						})
+					),
 				},
 			},
 		})
@@ -120,7 +122,18 @@ rex.action({
 	end,
 })
 
--- The pickers ask their question in the command palette with rex.ui.pick.
+-- The picker asks its question in the command palette with rex.ui.pick.
+-- The list has the open sessions first, then the projects that are not open.
+-- In each of the two groups, the items picked most recently come first.
+-- The icon shows the type: folder for a project, terminal for a session that is not a project.
+-- The detail text "active" shows that a session is open.
+-- A project that is already open is selected, not created again. The "project" action does that.
+
+-- Rex does not record when a session was last used, so the picker keeps its own list of
+-- picked labels in this file, most recent first, one label per line.
+local recentDirectory = os.getenv("HOME") .. "/.local/state/rex"
+local recentPath = recentDirectory .. "/picker_recent"
+
 local function project_picker(name, title, agent)
 	rex.action({
 		name = name,
@@ -131,42 +144,119 @@ local function project_picker(name, title, agent)
 			if not listing or not listing.ok then
 				error("pick project: cannot list the project directories", 0)
 			end
-			local items = {}
-			for dir in listing.stdout:gmatch("[^\n]+") do
-				table.insert(items, { id = dir, title = dir:match("([^/]+)$") })
+			local list, err = rex.call("session.list")
+			if err ~= nil then
+				error(err, 0)
 			end
+
+			local projectDirs = {}
+			local projectDirByLabel = {}
+			for dir in listing.stdout:gmatch("[^\n]+") do
+				table.insert(projectDirs, dir)
+				projectDirByLabel[dir:match("([^/]+)$")] = dir
+			end
+
+			-- Step 1: make one item for each label, and record the default order of the labels.
+			local itemByLabel = {}
+			local isActiveLabel = {}
+			local defaultLabels = {}
+			local currentLabel = nil
+			for _, s in ipairs(list.sessions) do
+				if s.session_id == ctx.session_id then
+					currentLabel = s.label
+				end
+				local projectDir = projectDirByLabel[s.label]
+				if projectDir then
+					itemByLabel[s.label] = { id = projectDir, title = s.label, icon = "folder", detail = "active" }
+				else
+					itemByLabel[s.label] = { id = s.session_id, title = s.label, icon = "terminal", detail = "active" }
+				end
+				isActiveLabel[s.label] = true
+				table.insert(defaultLabels, s.label)
+			end
+			for _, dir in ipairs(projectDirs) do
+				local label = dir:match("([^/]+)$")
+				if not itemByLabel[label] then
+					itemByLabel[label] = { id = dir, title = label, icon = "folder" }
+					table.insert(defaultLabels, label)
+				end
+			end
+
+			-- Step 2: read the labels picked before, most recent first.
+			local recentLabels = {}
+			local recentFile = io.open(recentPath, "r")
+			if recentFile then
+				for line in recentFile:lines() do
+					table.insert(recentLabels, line)
+				end
+				recentFile:close()
+			end
+
+			-- Step 3: put the items in order. Active items first, then inactive items.
+			-- In each group: the recent labels first, then the other labels in the default order.
+			-- The session you are in now goes to the end of the active group, because you do not
+			-- pick it to go somewhere. Thus Return goes to the session you used before this one.
+			local items = {}
+			local labelByItemID = {}
+			local isAdded = {}
+			for _, wantActive in ipairs({ true, false }) do
+				for _, labels in ipairs({ recentLabels, defaultLabels }) do
+					for _, label in ipairs(labels) do
+						local item = itemByLabel[label]
+						local isCurrent = label == currentLabel
+						if item and not isAdded[label] and not isCurrent and (isActiveLabel[label] == true) == wantActive then
+							isAdded[label] = true
+							labelByItemID[item.id] = label
+							table.insert(items, item)
+						end
+					end
+				end
+				if wantActive and currentLabel then
+					local currentItem = itemByLabel[currentLabel]
+					currentItem.detail = "active, current"
+					labelByItemID[currentItem.id] = currentLabel
+					table.insert(items, currentItem)
+				end
+			end
+
 			-- Escape cancels and gives nil.
-			local dir = rex.ui.pick({ title = title, items = items })
-			if not dir then
+			local picked = rex.ui.pick({ title = title, items = items })
+			if not picked then
 				return
 			end
-			return rex.invoke("project", { dir = dir, agent = agent })
+
+			-- Step 4: write the recent file again. Keep 50 labels.
+			-- The picked label goes first. The session you leave goes second, also when you
+			-- came to it without the picker, so that the next cmd+p has it at the top.
+			local pickedLabel = labelByItemID[picked]
+			local newRecentLabels = { pickedLabel }
+			if currentLabel and currentLabel ~= pickedLabel then
+				table.insert(newRecentLabels, currentLabel)
+			end
+			for _, label in ipairs(recentLabels) do
+				if label ~= pickedLabel and label ~= currentLabel and #newRecentLabels < 50 then
+					table.insert(newRecentLabels, label)
+				end
+			end
+			rex.exec({ "mkdir", "-p", recentDirectory })
+			local writeFile = io.open(recentPath, "w")
+			if writeFile then
+				writeFile:write(table.concat(newRecentLabels, "\n") .. "\n")
+				writeFile:close()
+			end
+
+			-- A project id is a directory path. All other ids are session ids.
+			if picked:sub(1, 1) ~= "/" then
+				rex.client.queue("session.select", { session_id = picked })
+				return
+			end
+			return rex.invoke("project", { dir = picked, agent = agent })
 		end,
 	})
 end
 
-project_picker("pick_project", "Pick Project…", "claude")
-project_picker("pick_project_pi", "Pick Project with Pi…", "pi")
-
-rex.action({
-	name = "pick_session",
-	title = "Pick Session…",
-	run = function(ctx)
-		local list, err = rex.call("session.list")
-		if err ~= nil then
-			error(err, 0)
-		end
-		local items = {}
-		for _, s in ipairs(list.sessions) do
-			table.insert(items, { id = s.session_id, title = s.label })
-		end
-		local session_id = rex.ui.pick({ title = "Pick Session…", items = items })
-		if not session_id then
-			return
-		end
-		rex.client.queue("session.select", { session_id = session_id })
-	end,
-})
+project_picker("pick_project", "Pick Project or Session…", "claude")
+project_picker("pick_project_pi", "Pick Project or Session with Pi…", "pi")
 
 rex.bind("cmd+p", "pick_project")
 rex.bind("cmd+alt+p", "pick_project_pi")
