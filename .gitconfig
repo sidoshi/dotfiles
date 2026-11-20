@@ -3,10 +3,10 @@
 	name = Siddharth Doshi
 [credential "https://github.com"]
 	helper = 
-	helper = !/opt/homebrew/bin/gh auth git-credential
+	helper = !$HOME/.local/share/mise/shims/gh auth git-credential
 [credential "https://gist.github.com"]
 	helper = 
-	helper = !/opt/homebrew/bin/gh auth git-credential
+	helper = !$HOME/.local/share/mise/shims/gh auth git-credential
 [url "https://git.lab.sidoshi.net/sidoshi/"]
 	insteadOf = forge:
 [url "https://git.lab.sidoshi.net/gh/"]
