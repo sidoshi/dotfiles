@@ -5,7 +5,7 @@
 vim.keymap.del("n", "<leader>|")
 vim.keymap.del("n", "<leader>-")
 
--- Add window maximize toggle using Ctrl+w z (similar to tmux prefix+z)
+-- Add window maximize toggle using Ctrl+w z
 vim.keymap.set("n", "<C-w>z", "<C-w>|<C-w>_", { desc = "Maximize current window" })
 -- Add a second mapping to restore windows to equal size
 vim.keymap.set("n", "<C-w>Z", "<C-w>=", { desc = "Restore windows to equal size" })
@@ -29,10 +29,9 @@ vim.keymap.set("n", "<leader>g2", "<cmd>CodeDiff HEAD~2<cr>",            { desc 
 vim.keymap.set("n", "<leader>cci", vim.lsp.buf.incoming_calls, { desc = "Incoming Calls" })
 vim.keymap.set("n", "<leader>cco", vim.lsp.buf.outgoing_calls, { desc = "Outgoing Calls" })
 
--- ctrl+hjkl moves between nvim windows; ghostty's `performable:` bindings take
--- over once we hit the edge of nvim and a ghostty split exists in that direction.
--- ctrl+shift+hjkl is an nvim-only escape hatch — never intercepted by ghostty.
--- In Rex, nvim gets ctrl+hjkl first and hands off to `rex focus` at the edge.
+-- ctrl+hjkl moves between nvim windows. Rex sends ctrl+hjkl to nvim first, and
+-- nvim hands off to `rex focus` at the edge.
+-- ctrl+shift+hjkl is an nvim-only escape hatch.
 local rex_dirs = { h = "left", j = "down", k = "up", l = "right" }
 for _, key in ipairs({ "h", "j", "k", "l" }) do
   vim.keymap.set("n", "<C-" .. key .. ">", function()

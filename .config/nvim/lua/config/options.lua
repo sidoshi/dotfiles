@@ -3,7 +3,7 @@
 -- Add any additional options here
 vim.opt.clipboard = ""
 
--- Pre-set background to prevent OSC 11 race condition on nvim 0.11 + Ghostty
+-- Pre-set background to prevent OSC 11 race condition on nvim 0.11
 -- Without this, the terminal's OSC 11 response can leak as keyboard input and crash nvim
 vim.o.background = "dark"
 
@@ -19,7 +19,7 @@ vim.filetype.add({
 })
 
 -- Make window separators easier to spot. Heavy box-drawing chars + a brighter
--- color that matches ghostty's split-divider-color so splits look unified.
+-- color.
 vim.opt.fillchars:append({
   vert = "┃",
   horiz = "━",

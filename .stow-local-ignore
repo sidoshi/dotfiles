@@ -1,7 +1,5 @@
 .jj
 .git
 .gitignore
-.gitmodules
 readme.md
 Brewfile
-.fdignore

@@ -42,17 +42,6 @@ up
 
 [[ -f ~/.local.zshrc ]] && source ~/.local.zshrc
 
-# Ghostty launched from GJump raycast extension (https://github.com/sidoshi/GJump)
-if [[ -n "$GHOSTTY_LAUNCH_DIR" ]]; then
-  cd "$GHOSTTY_LAUNCH_DIR"
-  if [[ -n "$GHOSTTY_LAUNCH_NVIM" && -n "$GHOSTTY_LAUNCH_ID" && ! -f "/tmp/ghostty-launch-$GHOSTTY_LAUNCH_ID" ]]; then
-    touch "/tmp/ghostty-launch-$GHOSTTY_LAUNCH_ID"
-    command zoxide add "$GHOSTTY_LAUNCH_DIR"
-    up
-    nvim .
-  fi
-fi
-
 # Brewfile auto-sync (function — zero startup cost)
 export DOTFILES_BREWFILE="$HOME/dotfiles/Brewfile"
 brew() {

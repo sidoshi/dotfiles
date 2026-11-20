@@ -31,7 +31,7 @@ for key, dir in pairs({ h = "left", j = "down", k = "up", l = "right" }) do
 	rex.bind("ctrl+" .. key, navigate(dir))
 end
 
--- Option sends Meta (ESC prefix) like Ghostty's macos-option-as-alt.
+-- Option sends Meta (ESC prefix).
 for _, key in ipairs({ "j", "k" }) do
 	rex.bind("alt+" .. key, function(ctx)
 		rex.block.call(terminal, "write", { block_id = ctx.block_id, data = "\27" .. key })

@@ -1,3 +1,0 @@
-# Ignore tmux plugin contents but keep the tpm submodule
-plugins/*
-!plugins/tpm
