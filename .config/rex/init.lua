@@ -93,19 +93,21 @@ rex.action({
 		local s, cerr = rex.call("session.create", {
 			label = label,
 			initial_windows = {
-				-- One tab: nvim on the left, the agent on the right.
+				-- One tab: the agent on the left, nvim on the right.
+				-- Rex gives the focus to the first block, thus the agent has the focus.
 				-- The tab has the agent's name, so the search for a "pi" tab above still finds it.
 				{
 					window_label = agent,
 					layout = rex.layout.horizontal(
-						0.5,
-						rex.layout.block({
-							flavor = "com.superlogical.terminal.shell",
-							options = { cwd = dir, initial_input = "nvim .\n" },
-						}),
+						-- The agent gets 40% of the width, nvim gets 60%.
+						0.4,
 						rex.layout.block({
 							flavor = "com.superlogical.terminal.shell",
 							options = { cwd = dir, initial_input = agent .. "\n" },
+						}),
+						rex.layout.block({
+							flavor = "com.superlogical.terminal.shell",
+							options = { cwd = dir, initial_input = "nvim .\n" },
 						})
 					),
 				},
@@ -291,10 +293,39 @@ rex.action({
 
 rex.bind("alt+q", "close_session")
 -- Cycle keys: ctrl acts on tabs in the session, alt acts on sessions.
-rex.bind("alt+tab", "session.next")
-rex.bind("alt+shift+tab", "session.previous")
-rex.bind("alt+[", "session.previous")
-rex.bind("alt+]", "session.next")
+-- The session names are only in the sidebar. Thus the alt keys go to the session and open the sidebar.
+-- You close the sidebar yourself.
+-- The app has only a toggle action for the sidebar, so the action first reads from the app
+-- preferences if the sidebar is collapsed. Without this check a second key press closes it again.
+local function open_sidebar_if_collapsed()
+	local collapsed = rex.exec({ "defaults", "read", "com.superlogical.rex", "Workspace.sidebarCollapsed" })
+	if collapsed and collapsed.ok and collapsed.stdout:match("1") then
+		rex.client.queue("client.sidebar.toggle")
+	end
+end
+
+rex.action({
+	name = "session_next_with_names",
+	title = "Next Session, Open Sidebar",
+	run = function()
+		rex.client.queue("session.next")
+		open_sidebar_if_collapsed()
+	end,
+})
+
+rex.action({
+	name = "session_previous_with_names",
+	title = "Previous Session, Open Sidebar",
+	run = function()
+		rex.client.queue("session.previous")
+		open_sidebar_if_collapsed()
+	end,
+})
+
+rex.bind("alt+tab", "session_next_with_names")
+rex.bind("alt+shift+tab", "session_previous_with_names")
+rex.bind("alt+[", "session_previous_with_names")
+rex.bind("alt+]", "session_next_with_names")
 
 -- ctrl+tab / ctrl+shift+tab: cycle tabs in the current session only.
 -- The app default follows the sidebar, which lists tabs of all sessions.
