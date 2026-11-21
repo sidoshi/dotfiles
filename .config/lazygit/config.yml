@@ -1,12 +1,24 @@
 git:
   # Show the whole file in a diff, not only the lines around each change.
   diffContextSize: 9999
-  # The | key switches between the two views. The first one is the default.
   # "omit" removes the file name box and the hunk header box of delta.
   diffRenderers:
     # Unified: one column, removed lines in red above added lines in green. Long lines wrap.
     - colorArg: always
       command: delta --dark --paging=never --line-numbers --file-style omit --hunk-header-style omit --hyperlinks --hyperlinks-file-link-format="lazygit-edit://{path}:{line}" --syntax-theme base16-256
-    # Side by side: old file on the left, new file on the right.
-    - colorArg: always
-      command: delta --dark --paging=never --side-by-side --line-numbers --file-style omit --hunk-header-style omit --hyperlinks --hyperlinks-file-link-format="lazygit-edit://{path}:{line}" --syntax-theme base16-256
+
+# Return to lazygit at once when hunk closes, without the "press enter" prompt.
+promptToReturnFromSubprocess: false
+
+# The | key opens hunk in full screen: side by side, long lines wrap, file list. q returns to lazygit.
+customCommands:
+  - key: "|"
+    context: files
+    description: Open working tree diff in hunk
+    command: hunk diff
+    output: terminal
+  - key: "|"
+    context: commits, subCommits, reflogCommits
+    description: Open commit in hunk
+    command: hunk show {{.SelectedCommit.Hash}}
+    output: terminal

@@ -1,0 +1,9 @@
+mode = "unified"
+wrap_lines = true
+theme = "github-dark-default"
+line_numbers = true
+hunk_headers = false
+menu_bar = true
+agent_notes = false
+copy_decorations = false
+cursor_line = "row"
