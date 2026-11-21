@@ -1,4 +1,12 @@
 git:
+  # Show the whole file in a diff, not only the lines around each change.
+  diffContextSize: 9999
+  # The | key switches between the two views. The first one is the default.
+  # "omit" removes the file name box and the hunk header box of delta.
   diffRenderers:
+    # Unified: one column, removed lines in red above added lines in green. Long lines wrap.
     - colorArg: always
-      command: delta --dark --paging=never --line-numbers --hyperlinks --hyperlinks-file-link-format="lazygit-edit://{path}:{line}" --syntax-theme base16-256 -s
+      command: delta --dark --paging=never --line-numbers --file-style omit --hunk-header-style omit --hyperlinks --hyperlinks-file-link-format="lazygit-edit://{path}:{line}" --syntax-theme base16-256
+    # Side by side: old file on the left, new file on the right.
+    - colorArg: always
+      command: delta --dark --paging=never --side-by-side --line-numbers --file-style omit --hunk-header-style omit --hyperlinks --hyperlinks-file-link-format="lazygit-edit://{path}:{line}" --syntax-theme base16-256
