@@ -7,7 +7,7 @@
   "calendarEnabled": true,
   "showAllDayEvents": true,
   "launchAtLogin": true,
-  "mediaKeyForwardingEnabled": true,
+  "mediaKeyForwardingEnabled": false,
   "showUpcomingEvent": true,
   "scratchPadColor": "SYSTEM",
   "searchFolders": [],
