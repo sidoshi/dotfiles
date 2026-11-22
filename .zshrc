@@ -111,12 +111,13 @@ source_tool_setup starship init zsh --print-full-init
 source_tool_setup atuin init zsh
 source_tool_setup zoxide init zsh
 
-# Brewfile auto-sync (function — zero startup cost)
+# This wrapper writes the Brewfile again after each command that changes the
+# installed packages, so the Brewfile in the dotfiles always matches the machine.
 export DOTFILES_BREWFILE="$HOME/dotfiles/Brewfile"
 brew() {
   command brew "$@"
-  case "$1" in install|uninstall|tap|untap|cask)
-    echo "--- 🔄 Auto-syncing Brewfile to dotfiles ---"
+  case "$1" in install|uninstall|tap|untap)
+    echo "--- Writing the Brewfile in the dotfiles again"
     command brew bundle dump --force --file="$DOTFILES_BREWFILE" ;;
   esac
 }

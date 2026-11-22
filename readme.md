@@ -1,27 +1,49 @@
 # Dotfiles
 
-Install Homebrew.
+## New machine setup
 
-Install Git (if for some reason the macOS default isn't firing):
-brew install git
+1. Install [Homebrew](https://brew.sh). The installer also installs Git.
 
-Clone your dotfiles:
-git clone https://github.com/your-username/dotfiles.git ~/dotfiles
+2. Install mise. The setup command is a mise task, so mise must be there first.
 
-Run Brew Bundle from the repo:
-brew bundle --file ~/dotfiles/Brewfile
+   ```zsh
+   brew install mise
+   ```
 
-Install Mise & Runtimes:
-mise install
+3. Clone the repository to `~/dotfiles`. The tasks and `.zshrc` expect this path.
 
-Stow your configs:
+   ```zsh
+   git clone https://git.lab.sidoshi.net/gh/dotfiles ~/dotfiles
+   ```
 
-```zsh
-cd ~/dotfiles
-stow --adopt .
-```
+4. Run the bootstrap task. `mise trust` lets mise read the config and tasks in the repository.
 
-Sign in to atuin and sync. Then run `atuin threads import` to index existing agent sessions (`atuin resume` to search and resume them).
+   ```zsh
+   cd ~/dotfiles
+   mise trust
+   mise run bootstrap
+   ```
+
+   The task does these steps in sequence:
+
+   - `mise install`: installs the tools in `.config/mise/config.toml`.
+   - `brew bundle`: installs the packages in the `Brewfile`.
+   - `stow .`: links the config files into the home directory. If a file already exists there, stow stops and does not overwrite it. Move the file away and run the task again.
+   - `mise run macos`: applies the macOS settings.
+
+   It is safe to run the task more than one time.
+
+5. Open a new terminal, then do the manual steps:
+
+   - `mise run fnox`: stores the age key. See [Secret Management](#secret-management).
+   - Sign in to atuin and sync. Then run `atuin threads import` to index existing agent sessions (`atuin resume` to search and resume them).
+   - `rex do apply_look` in a Rex terminal. See [Rex](#rex).
+
+## macOS settings
+
+`mise run macos` writes the macOS settings with `defaults`: Dock, Finder, trackpad, screenshots, window tiling, Caps Lock as Escape, and the Spotlight shortcuts (off, because Sol uses cmd+space). The task is `.config/mise/tasks/macos`. To add a setting, add a `defaults write` line there.
+
+Log out and log in again after the first run. The trackpad, Caps Lock and window tiling settings start only then.
 
 ## Rex
 
@@ -52,7 +74,7 @@ eval "$(fnox activate zsh)"
 
 ### New machine setup
 
-On a new machine, run the bootstrap task to store your age private key (the key that decrypts your fnox secrets):
+On a new machine, run the fnox task to store your age private key (the key that decrypts your fnox secrets):
 
 ```zsh
 mise run fnox

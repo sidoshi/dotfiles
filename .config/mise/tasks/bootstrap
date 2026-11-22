@@ -1,0 +1,47 @@
+#!/usr/bin/env bash
+#MISE description="Set up a new machine: tools, Homebrew packages, config links, macOS settings"
+#
+# Flow: install the mise tools, install the Homebrew packages, link the config
+# files into the home directory with stow, apply the macOS settings.
+# Homebrew and mise must be installed before this task. The readme has the steps.
+# It is safe to run this more than one time.
+set -euo pipefail
+
+dotfilesDirectory="$HOME/dotfiles"
+
+if [[ ! -d "$dotfilesDirectory" ]]; then
+  echo "bootstrap: $dotfilesDirectory does not exist. Clone the repository there first." >&2
+  exit 1
+fi
+
+if ! command -v brew >/dev/null; then
+  echo "bootstrap: Homebrew is not installed. See https://brew.sh" >&2
+  exit 1
+fi
+
+# The mise tools come first: the Brewfile has an npm package, and npm comes
+# from the node that mise installs.
+echo "--- Installing mise tools"
+mise install
+
+echo "--- Installing Homebrew packages"
+brew bundle --file "$dotfilesDirectory/Brewfile"
+
+# These directories must exist as real directories before stow runs. If one
+# does not exist, stow links the full directory into the repository, and then
+# each program that writes there puts its files in the repository.
+mkdir -p "$HOME/.config" "$HOME/.claude" "$HOME/.pi/agent"
+
+# stow stops with an error if a file already exists in the home directory.
+# It does not overwrite the file. Move the file away and run this task again.
+echo "--- Linking config files"
+stow --dir "$dotfilesDirectory" --target "$HOME" .
+
+echo "--- Applying macOS settings"
+"$dotfilesDirectory/.config/mise/tasks/macos"
+
+echo "--- Done. Steps that remain:"
+echo "  1. Open a new terminal."
+echo "  2. mise run fnox        (stores the age key for the secrets)"
+echo "  3. atuin login, then atuin sync and atuin threads import"
+echo "  4. rex do apply_look    (in a Rex terminal)"

@@ -1,0 +1,66 @@
+#!/usr/bin/env bash
+#MISE description="Apply the macOS settings (Dock, Finder, trackpad, keyboard, screenshots)"
+#
+# Flow: write each setting with `defaults`, then restart the programs that read
+# them. Each value is the value on the machine where this file was made. It is
+# safe to run this more than one time.
+set -euo pipefail
+
+# Dock: hide it, and use small icons.
+defaults write com.apple.dock autohide -bool true
+defaults write com.apple.dock tilesize -float 38
+
+# Finder: show the extension of all files.
+defaults write NSGlobalDomain AppleShowAllExtensions -bool true
+
+# Trackpad: tap to click. macOS reads this from three places: the built-in
+# trackpad, a Bluetooth trackpad, and the login session.
+defaults write com.apple.AppleMultitouchTrackpad Clicking -bool true
+defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad Clicking -bool true
+defaults -currentHost write NSGlobalDomain com.apple.mouse.tapBehavior -int 1
+
+# Screenshots go to the clipboard, not to a file on the desktop.
+defaults write com.apple.screencapture target -string clipboard
+
+# Window tiling is off because Rectangle moves the windows.
+defaults write com.apple.WindowManager EnableTilingByEdgeDrag -bool false
+defaults write com.apple.WindowManager EnableTopTilingByEdgeDrag -bool false
+defaults write com.apple.WindowManager EnableTilingOptionAccelerator -bool false
+defaults write com.apple.WindowManager EnableTiledWindowMargins -bool false
+
+# Caps Lock is Escape on the built-in keyboard (keyboard ID 0-0-0).
+# 30064771129 is the Caps Lock key code and 30064771113 is the Escape key code.
+defaults -currentHost write NSGlobalDomain com.apple.keyboard.modifiermapping.0-0-0 -array \
+  '<dict>
+    <key>HIDKeyboardModifierMappingSrc</key><integer>30064771129</integer>
+    <key>HIDKeyboardModifierMappingDst</key><integer>30064771113</integer>
+  </dict>'
+
+# The two Spotlight shortcuts are off because Sol uses cmd+space.
+# 64 is "Show Spotlight search" (cmd+space) and 65 is "Show Finder search
+# window" (cmd+alt+space). In the parameters, 49 is the space key.
+defaults write com.apple.symbolichotkeys AppleSymbolicHotKeys -dict-add 64 \
+  '<dict>
+    <key>enabled</key><false/>
+    <key>value</key><dict>
+      <key>type</key><string>standard</string>
+      <key>parameters</key><array><integer>32</integer><integer>49</integer><integer>1048576</integer></array>
+    </dict>
+  </dict>'
+defaults write com.apple.symbolichotkeys AppleSymbolicHotKeys -dict-add 65 \
+  '<dict>
+    <key>enabled</key><false/>
+    <key>value</key><dict>
+      <key>type</key><string>standard</string>
+      <key>parameters</key><array><integer>32</integer><integer>49</integer><integer>1572864</integer></array>
+    </dict>
+  </dict>'
+
+# These programs read their settings only when they start.
+killall Dock
+killall Finder
+killall SystemUIServer
+# This makes macOS read the keyboard shortcuts again.
+/System/Library/PrivateFrameworks/SystemAdministration.framework/Resources/activateSettings -u
+
+echo "macOS settings applied. Log out and log in again for the trackpad, Caps Lock and window tiling settings."
