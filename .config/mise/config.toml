@@ -52,3 +52,10 @@ yq = "latest"
 yt-dlp = "latest"
 zig = "master"
 zoxide = "latest"
+
+[settings]
+# mise.lock holds the exact version and checksum of each tool, so a new machine
+# gets the same versions. `mise upgrade` writes the new versions into it.
+lockfile = true
+# Only this platform is in the lockfile. Without this line mise locks 7 platforms.
+lockfile_platforms = ["macos-arm64"]

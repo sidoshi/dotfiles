@@ -41,9 +41,15 @@
 
 ## macOS settings
 
-`mise run macos` writes the macOS settings with `defaults`: Dock, Finder, trackpad, screenshots, window tiling, Caps Lock as Escape, and the Spotlight shortcuts (off, because Sol uses cmd+space). The task is `.config/mise/tasks/macos`. To add a setting, add a `defaults write` line there.
+`mise run macos` writes the macOS settings with `defaults`: Dock, Finder, trackpad, screenshots, window tiling, Caps Lock as Escape, and the Spotlight shortcuts (off, because Sol uses cmd+space). It also turns on Touch ID for sudo, and asks for the password one time to do that. The task is `.config/mise/tasks/macos`. To add a setting, add a `defaults write` line there.
 
 Log out and log in again after the first run. The trackpad, Caps Lock and window tiling settings start only then.
+
+## Upgrades
+
+`mise run upgrade` upgrades the Homebrew packages, the mise tools and the nvim plugins, then removes the zsh cache. The task is `.config/mise/tasks/upgrade`.
+
+`.config/mise/mise.lock` holds the exact version of each mise tool, so `mise install` on a new machine gives the same versions. Only `mise run upgrade` (or `mise upgrade`) moves the versions. Commit `mise.lock` and `lazy-lock.json` after each upgrade.
 
 ## Rex
 

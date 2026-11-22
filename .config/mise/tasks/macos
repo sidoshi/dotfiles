@@ -56,6 +56,12 @@ defaults write com.apple.symbolichotkeys AppleSymbolicHotKeys -dict-add 65 \
     </dict>
   </dict>'
 
+# Touch ID for sudo. macOS keeps /etc/pam.d/sudo_local after system updates.
+# This is the only setting that needs the password.
+if ! grep -q '^auth.*pam_tid.so' /etc/pam.d/sudo_local 2>/dev/null; then
+  echo "auth       sufficient     pam_tid.so" | sudo tee -a /etc/pam.d/sudo_local >/dev/null
+fi
+
 # These programs read their settings only when they start.
 killall Dock
 killall Finder

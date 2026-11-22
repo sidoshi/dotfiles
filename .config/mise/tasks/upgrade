@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+#MISE description="Upgrade the Homebrew packages, mise tools and nvim plugins"
+#
+# Flow: upgrade the Homebrew packages, upgrade the mise tools, update the nvim
+# plugins, remove the zsh cache. The task changes mise.lock and lazy-lock.json
+# in the dotfiles. Commit them after the run.
+set -euo pipefail
+
+# Homebrew comes first because it also upgrades mise.
+echo "--- Upgrading Homebrew packages"
+brew update
+brew upgrade
+
+# This also writes the new versions into mise.lock.
+echo "--- Upgrading mise tools"
+mise upgrade
+
+echo "--- Updating nvim plugins"
+nvim --headless "+Lazy! sync" +qa
+
+# The cache holds the completion files and the setup code of the tools.
+# The next shell start makes them again from the new tool versions.
+echo "--- Removing the zsh cache"
+rm -rf "$HOME/.cache/zsh"
+
+echo "--- Done. Open a new terminal, then commit mise.lock and lazy-lock.json."
