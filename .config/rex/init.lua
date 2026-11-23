@@ -645,10 +645,39 @@ rex.bind("cmd+k", "pane.new_floating")
 local shells = { zsh = true, ["-zsh"] = true, bash = true, sh = true, fish = true }
 
 -- cmd+w: close the pane, but ask first when a program other than the shell runs in it.
+-- The nvim and lazygit floating panes are minimized instead, so the program keeps its state.
 rex.action({
 	name = "close_pane",
 	title = "Close Pane, Ask if a Program Runs",
 	run = function(ctx)
+		local nvimOrLazygitLayer = nil
+		local view = rex.session.view({})
+		for _, w in ipairs(view and view.windows or {}) do
+			for _, layer in ipairs(w.layers or {}) do
+				for _, block in ipairs(layer.blocks or {}) do
+					if block.block_id == ctx.block_id and layer.kind == "floating" then
+						for _, floatingPane in ipairs(floatingPanes) do
+							if block.label == floatingPane.label then
+								nvimOrLazygitLayer = layer
+							end
+						end
+					end
+				end
+			end
+		end
+
+		if nvimOrLazygitLayer then
+			local _, hideError = rex.call("session.set_layer_state", {
+				session_id = ctx.session_id,
+				layer_id = nvimOrLazygitLayer.layer_id,
+				state = "minimized",
+			})
+			if hideError ~= nil then
+				error(hideError, 0)
+			end
+			return
+		end
+
 		local p = rex.block.call(terminal, "process", { block_id = ctx.block_id })
 		local fg = p and p.foreground
 		if fg and not shells[fg.argv0 or fg.name] then
